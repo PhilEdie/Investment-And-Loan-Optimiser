@@ -1,13 +1,13 @@
 import currency from "currency.js";
 import { Account } from "./Account";
 
-class Investment extends Account {
+export class Investment extends Account {
 
     constructor(accountName: string, interestRate: number, balance: currency) {
-        super(accountName, interestRate, balance, 2);
         if (balance.value < 0) {
             throw new Error("Error, a balance on an Investment object should be greater or equal to 0.");
         }
+        super(accountName, interestRate, balance, 2);
     }
 
     public static clone(toCopy: Investment) {
@@ -18,7 +18,7 @@ class Investment extends Account {
         return `${this.accountName}[interestRate=${this.interestRate}, balance=${this.balance.format()}]`;
     }
 
-    public setBalance(newBalance: currency) {
+    public set balance(newBalance: currency) {
         if (newBalance.value < 0) {
             throw new Error("Error, a balance on an Investment object should be greater or equal to 0.");
         }

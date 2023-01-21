@@ -1,0 +1,51 @@
+import currency from "currency.js";
+import { Account } from "./Account";
+import { Loan } from "./Loan";
+
+class Utilities {
+    public static isDefaultName(name: string): boolean {
+        const regex = new RegExp(/(Loan|Investment)(\d)+/);
+        return regex.test(name);
+    }
+
+    public static containsAllLoans(accounts: Account[]): boolean {
+        for (const account of accounts) {
+            if (!(account instanceof Loan)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static allLoansPaidOff(accounts: Account[]): boolean {
+        for (const account of accounts) {
+            if (account instanceof Loan && !account.isPaidOff()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static getNetWorth(accounts: Account[]): currency {
+        const networth = currency(0);
+        for (const account of accounts) {
+            networth.add(account.balance);
+        }
+        return networth;
+    }
+
+    public static getTotalInterest(accounts: Account[]): currency {
+        const totalInterest = currency(0);
+        for (const account of accounts) {
+            totalInterest.add(account.interestForPeriod);
+        }
+        return totalInterest
+    }
+
+    public static getPaidOffLoansAsString(accounts: Account[]): string {
+        const paidOffLoans = accounts.filter(account => account instanceof Loan && account.isPaidOff()).map(account => account.accountName);
+        return paidOffLoans.join(", ");
+    }
+}
+
+export default Utilities;
