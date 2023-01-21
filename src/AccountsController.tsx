@@ -47,7 +47,7 @@ export class AccountsController {
         const accounts = this.createCopyOfAccounts(history[history.length - 1]);
 
         // Sort accounts so high priority accounts will be paid first.
-        accounts.sort((a, b) => a.priority - b.priority);
+        accounts.sort((a, b) => a.getPriority() - b.getPriority());
 
         // Pay minimums into each loan:
         remainingIncome = this.payMinimumsOnLoans(accounts, remainingIncome);
@@ -135,7 +135,7 @@ export class AccountsController {
 
     public removeAccount(accountName: string) {
         for (const account of this._accountsModel.getStartingAccounts()) {
-            if (account.accountName === accountName) {
+            if (account.getAccountName() === accountName) {
                 this._accountsModel.removeStartingAccount(account);
                 return;
             }
@@ -144,7 +144,7 @@ export class AccountsController {
 
     public containsAccountWithName(accountName: string): boolean {
         for (const account of this._accountsModel.getStartingAccounts()) {
-            if (account.accountName === accountName) {
+            if (account.getAccountName() === accountName) {
                 return true;
             }
         }

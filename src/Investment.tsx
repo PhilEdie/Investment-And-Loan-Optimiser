@@ -4,18 +4,18 @@ import { Account } from "./Account";
 export class Investment extends Account {
 
     constructor(accountName: string, interestRate: number, balance: currency) {
+        super(accountName, interestRate, balance, 2);
         if (balance.value < 0) {
             throw new Error("Error, a balance on an Investment object should be greater or equal to 0.");
         }
-        super(accountName, interestRate, balance, 2);
     }
 
     public static clone(toCopy: Investment) {
-        return new Investment(toCopy.accountName, toCopy.interestRate, toCopy.balance);
+        return new Investment(toCopy.getAccountName(), toCopy.getInterestRate(), toCopy.getBalance());
     }
 
     public toString(): string {
-        return `${this.accountName}[interestRate=${this.interestRate}, balance=${this.balance.format()}]`;
+        return `${this.getAccountName()}[interestRate=${this.getInterestRate()}, balance=${this.getBalance().format()}]`;
     }
 
     public set balance(newBalance: currency) {
@@ -26,8 +26,8 @@ export class Investment extends Account {
     }
 
     public makePayment(payment: currency): currency {
-        this.paymentForPeriod = payment;
-        this.balance = this.balance.add(payment);
+        this.setPaymentForPeriod(payment);
+        this.setBalance(this.balance.add(payment));
         return currency(0);
     }
 }

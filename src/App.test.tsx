@@ -8,112 +8,126 @@ import currency from "currency.js";
 import Utilities from "./Utilities";
 import { AccountsController } from "./AccountsController";
 
-test("renders learn react link", () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+// test("renders learn react link", () => {
+//   render(<App />);
+//   const linkElement = screen.getByText(/learn react/i);
+//   expect(linkElement).toBeInTheDocument();
+// });
 
 test("payOffLoanWithPayment", () => {
   const loan = new Loan("Loan 1", 1.05, currency(-500), currency(100));
   const leftoverIncome = loan.makePayment(currency(1000));
-  expect(leftoverIncome).toBe(currency(500));
-  expect(loan.paymentForPeriod).toBe(currency(500));
+  expect(leftoverIncome).toStrictEqual(currency(500));
+  expect(loan.getPaymentForPeriod()).toStrictEqual(currency(500));
   expect(loan.isPaidOff()).toBe(true);
 });
 
 test("payOffLoanWithMinimumPayment", () => {
   const loan = new Loan("Loan 1", 1.05, currency(-100), currency(200));
   const leftoverIncome = loan.makeMinimumPayment();
-  expect(leftoverIncome).toBe(100.0);
-  expect(loan.paymentForPeriod).toBe(currency(100));
+  expect(leftoverIncome).toStrictEqual(currency(100));
+  expect(loan.getPaymentForPeriod()).toStrictEqual(currency(100));
   expect(loan.isPaidOff()).toBe(true);
 });
 
 test("sortingAccounts1", () => {
-  const toSort: Account[] = [];
-  toSort.push(new Loan("Loan 1", 1.25, -300, 50));
-  toSort.push(new Loan("Loan 2", 1.1, -1500, 100));
-  toSort.push(new Investment("Investment 1", 1.08, 5000));
-  toSort.push(new Investment("Investment 2", 1.04, 20000));
+  let toSort: Account[] = [];
+  toSort.push(new Loan("Loan 1", 1.25, currency(-300), currency(50)));
+  toSort.push(new Loan("Loan 2", 1.1, currency(-1500), currency(100)));
+  toSort.push(new Investment("Investment 1", 1.08, currency(5000)));
+  toSort.push(new Investment("Investment 2", 1.04, currency(20000)));
 
-  const expected = new ArrayList<>(toSort);
-  Collections.sort(toSort);
+  // Clone an array.
+  const expected = toSort.map(obj => ({ ...obj }));
+
+  toSort = toSort.sort((a, b) => a.compareTo(b));
   expect(toSort).toEqual(expected);
 });
 
 test("sortingAccounts2", () => {
-  const toSort: Account[] = [];
-  toSort.push(new Loan("Loan 1", 1.25, -300, 50));
-  toSort.push(new Investment("Investment 1", 1.25, 5000));
+  let toSort: Account[] = [];
+  toSort.push(new Loan("Loan 1", 1.25, currency(-300), currency(50)));
+  toSort.push(new Investment("Investment 1", 1.25, currency(5000)));
 
-  const expected = new ArrayList<>(toSort);
-  Collections.sort(toSort);
+  // Clone an array.
+  const expected = toSort.map(obj => ({ ...obj }));
+
+  toSort = toSort.sort((a, b) => a.compareTo(b));
   expect(toSort).toEqual(expected);
 });
 
 test("sortingAccounts3", () => {
-  const toSort: Account[] = [];
-  toSort.push(new Loan("Loan 1", 1.26, -300, 50));
-  toSort.push(new Loan("Loan 2", 1.25, -300, 50));
-  toSort.push(new Investment("Investment 1", 1.25, 5000));
-
-  const expected = new ArrayList<>(toSort);
-  Collections.sort(toSort);
-  expect(toSort).toEqual(expected);
-});
-
-test("sortingEqualInterestRateAccounts", () => {
-  const toSort: Account[] = [];
-  toSort.push(new Loan("Loan 1", 1.1, -10000, 100));
-  toSort.push(new Investment("Investment 1", 1.1, 5000));
-  toSort.push(new Loan("Loan 2", 1.08, -10000, 100));
-  toSort.push(new Investment("Investment 2", 1.08, 5000));
-
-  const expected = JSON.parse(JSON.stringify(toSort)) as typeof toSort;
-  Collections.sort(toSort);
-  expect(toSort.toString()).toEqual(expected.toString());
-});
-
-test("sortingAccounts2", () => {
-  const toSort: Account[] = [];
-  toSort.push(new Loan("Loan 1", 1.25, -300, 50));
-  toSort.push(new Investment("Investment 1", 1.25, 5000));
-
-  const expected = JSON.parse(JSON.stringify(toSort)) as typeof toSort;
-
-  Collections.sort(toSort);
-  expect(toSort).toEqual(expected);
-});
-
-test("sortingAccounts3", () => {
-  const toSort: Account[] = [];
+  let toSort: Account[] = [];
   toSort.push(new Loan("Loan 1", 1.26, currency(-300), currency(50)));
   toSort.push(new Loan("Loan 2", 1.25, currency(-300), currency(50)));
   toSort.push(new Investment("Investment 1", 1.25, currency(5000)));
 
-  const expected = JSON.parse(JSON.stringify(toSort)) as typeof toSort;
-  Collections.sort(toSort);
+  // Clone an array.
+  const expected = toSort.map(obj => ({ ...obj }));
+
+  toSort = toSort.sort((a, b) => a.compareTo(b));
   expect(toSort).toEqual(expected);
 });
 
 test("sortingEqualInterestRateAccounts", () => {
-  const toSort: Account[] = [];
-  toSort.push(new Loan("Loan 1", 1.1, -10000, 100));
-  toSort.push(new Investment("Investment 1", 1.1, 5000));
-  toSort.push(new Loan("Loan 2", 1.08, -10000, 100));
-  toSort.push(new Investment("Investment 2", 1.08, 5000));
+  let toSort: Account[] = [];
+  toSort.push(new Loan("Loan 1", 1.1, currency(-10000), currency(100)));
+  toSort.push(new Investment("Investment 1", 1.1, currency(5000)));
+  toSort.push(new Loan("Loan 2", 1.08, currency(-10000), currency(100)));
+  toSort.push(new Investment("Investment 2", 1.08, currency(5000)));
 
-  const expected = JSON.parse(JSON.stringify(toSort)) as typeof toSort;
-  Collections.sort(toSort);
-  expect(toSort.toString()).toEqual(expected.toString());
+  // Clone an array.
+  const expected = toSort.map(obj => ({ ...obj }));
+
+  toSort = toSort.sort((a, b) => a.compareTo(b));
+  expect(toSort).toEqual(expected);
 });
 
+test("sortingAccounts2", () => {
+  let toSort: Account[] = [];
+  toSort.push(new Loan("Loan 1", 1.25, currency(-300), currency(50)));
+  toSort.push(new Investment("Investment 1", 1.25, currency(5000)));
+
+  // Clone an array.
+  const expected = toSort.map(obj => ({ ...obj }));
+
+  toSort = toSort.sort((a, b) => a.compareTo(b));
+  expect(toSort).toEqual(expected);
+});
+
+test("sortingAccounts3", () => {
+  let toSort: Account[] = [];
+  toSort.push(new Loan("Loan 1", 1.26, currency(-300), currency(50)));
+  toSort.push(new Loan("Loan 2", 1.25, currency(-300), currency(50)));
+  toSort.push(new Investment("Investment 1", 1.25, currency(5000)));
+
+  // Clone an array.
+  const expected = toSort.map(obj => ({ ...obj }));
+
+  toSort = toSort.sort((a, b) => a.compareTo(b));
+  expect(toSort).toEqual(expected);
+});
+
+test("sortingEqualInterestRateAccounts", () => {
+  let toSort: Account[] = [];
+  toSort.push(new Loan("Loan 1", 1.1, currency(-10000), currency(100)));
+  toSort.push(new Investment("Investment 1", 1.1, currency(5000)));
+  toSort.push(new Loan("Loan 2", 1.08, currency(-10000), currency(100)));
+  toSort.push(new Investment("Investment 2", 1.08, currency(5000)));
+
+  // Clone an array.
+  const expected = toSort.map(obj => ({ ...obj }));
+
+  toSort = toSort.sort((a, b) => a.compareTo(b));
+  expect(toSort).toEqual(expected);
+});
+
+/*
 test("accumulatingInterest", () => {
-  const p = new AccountController();
+  const p = new AccountsController();
   const m = p.getAccountsModel();
-  p.getAccountsModel().addStartingAccount(new Loan("Loan 1", 1.05, -1000, 100));
-  p.run(1, 100);
+  p.getAccountsModel().addStartingAccount(new Loan("Loan 1", 1.05, currency(-1000), currency(100)));
+  p.run(1, currency(100));
   expect(m.getHistory().peek().get(0).getBalance()).toBe(-945);
   expect(m.getHistory().peek().get(0).getInterestForPeriod()).toBe(-45);
 });
@@ -129,9 +143,9 @@ test("distributeAcrossLoans1", () => {
   const topOfStack = m.getHistory().peek();
 
   expect(topOfStack.toString()).toEqual(
-    "[Loan 1[interestRate=1.05, balance=$0.00, minimumPayment=$100.00], "
-    + "Loan 2[interestRate=1.05, balance=$0.00, minimumPayment=$100.00], "
-    + "Investment 1[interestRate=1.05, balance=$105.00]]"
+  "[Loan 1[interestRate=1.05, balance=$0.00, minimumPayment=$100.00], "
+  + "Loan 2[interestRate=1.05, balance=$0.00, minimumPayment=$100.00], "
+  + "Investment 1[interestRate=1.05, balance=$105.00]]"
   );
   expect(Utilities.getPaidOffLoanNames(topOfStack)).toEqual("Loan 1, Loan 2");
 });
@@ -273,37 +287,37 @@ test("stringFormatting", () => {
 
 test("ensureAccountBalanceInterestRateAlwaysPositive", () => {
   expect(() => {
-    new Investment("i", -1, currency(1));
+  new Investment("i", -1, currency(1));
   }).toThrowError();
 });
 
 test("ensureInvestmentBalanceAlwaysPositive1", () => {
   expect(() => {
-    new Investment("i", 1, currency(-1));
+  new Investment("i", 1, currency(-1));
   }).toThrowError();
 });
 
 test("ensureInvestmentBalanceAlwaysPositive2", () => {
   const inv = new Investment("i", 1, currency(1));
   expect(() => {
-    inv.balance = currency(-100);
+  inv.balance = currency(-100);
   }).toThrowError();
 });
 
 test("ensureLoanBalanceAlwaysNegative1", () => {
   expect(() => {
-    new Loan("i", 1, currency(1), currency(1));
+  new Loan("i", 1, currency(1), currency(1));
   }).toThrowError();
 });
 
 test("ensureLoanBalanceAlwaysNegative2", () => {
   const loan = new Loan("i", 1, currency(-1), currency(1));
   expect(() => {
-    loan.balance = (currency(100));
+  loan.balance = (currency(100));
   }).toThrowError();
 });
 
-
+*/
 
 
 

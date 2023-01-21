@@ -8,78 +8,104 @@ export abstract class Account {
     private _paymentForPeriod = currency(0);
     private _priority: number;
 
-    constructor(accountName: string, interestRate: number, balance: currency, priority: number) {
-        if (accountName.trim() === "") {
+    constructor(newAccountName: string, newInterestRate: number, newBalance: currency, newPriority: number) {
+        if (newAccountName.trim() === "") {
             throw new Error("Error. accountName should not be empty.");
         }
 
-        if (interestRate < 1) {
+        if (newInterestRate < 1) {
             throw new Error("Error, interestRate should be greater or equal to 1.");
         }
 
-        this._accountName = accountName;
-        this._interestRate = interestRate;
-        this._balance = balance;
-        this._priority = priority;
+        this._accountName = newAccountName;
+        this._interestRate = newInterestRate;
+        this._balance = newBalance;
+        this._priority = newPriority;
     }
 
-    public get accountName(): string {
+    public getAccountName(): string {
         return this._accountName;
     }
 
-    public get interestRate(): number {
+    public getInterestRate(): number {
         return this._interestRate;
     }
 
-    public get balance(): currency {
+    public getBalance(): currency {
         return this._balance;
     }
 
-    public set balance(newBalance: currency) {
+    public setBalance(newBalance: currency) {
         this._balance = newBalance;
     }
 
-    public get interestForPeriod(): currency {
+    public getInterestForPeriod(): currency {
         return this._interestForPeriod;
     }
 
-    public get paymentForPeriod(): currency {
+    public setInterestForPeriod(interest: currency) {
+        this._interestForPeriod = interest;
+    }
+
+    public getPaymentForPeriod(): currency {
         return this._paymentForPeriod;
     }
 
-    public set paymentForPeriod(newPaymentForPeriod: currency) {
+    public setPaymentForPeriod(newPaymentForPeriod: currency) {
         if (newPaymentForPeriod.value < 0) {
             throw new Error("Error. paymentForPeriod should not be less than 0.");
         }
         this._paymentForPeriod = newPaymentForPeriod;
     }
 
-    public get priority(): number {
+    public getPriority(): number {
         return this._priority;
     }
 
     public abstract makePayment(payment: currency): currency;
 
     public applyInterest() {
-        const beforeBalance = this.balance;
-        this.balance = this.balance.multiply(this.interestRate);
-        this._interestForPeriod = this.balance.subtract(beforeBalance);
+        const beforeBalance = this.getBalance();
+        this.setBalance(this.getBalance().multiply(this.getInterestRate()));
+        this.setInterestForPeriod(this.getBalance().subtract(beforeBalance));
     }
 
     public compareTo(other: Account): number {
-        if (this.interestRate > other.interestRate) {
+        if (this.getInterestRate() > other.getInterestRate()) {
             return -1;
-        } else if (this.interestRate < other.interestRate) {
+        } else if (this.getInterestRate() < other.getInterestRate()) {
             return 1;
         } else {
-            if (this.priority < other.priority) {
+            if (this.getPriority() < other.getPriority()) {
                 return -1;
-            } else if (this.priority > other.priority) {
+            } else if (this.getPriority() > other.getPriority()) {
                 return 1;
             } else {
-                if (this.accountName.localeCompare(other.accountName) < 0) {
+                if (this.getAccountName().localeCompare(other.getAccountName()) < 0) {
                     return -1;
-                } else if (this.accountName.localeCompare(other.accountName) > 0) {
+                } else if (this.getAccountName().localeCompare(other.getAccountName()) > 0) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+
+    public static compare(account1: Account, account2: Account): number {
+        if (account1.getInterestRate() > account2.getInterestRate()) {
+            return -1;
+        } else if (account1.getInterestRate() < account2.getInterestRate()) {
+            return 1;
+        } else {
+            if (account1.getPriority() < account2.getPriority()) {
+                return -1;
+            } else if (account1.getPriority() > account2.getPriority()) {
+                return 1;
+            } else {
+                if (account1.getAccountName().localeCompare(account2.getAccountName()) < 0) {
+                    return -1;
+                } else if (account1.getAccountName().localeCompare(account2.getAccountName()) > 0) {
                     return 1;
                 } else {
                     return 0;
@@ -88,3 +114,4 @@ export abstract class Account {
         }
     }
 }
+
