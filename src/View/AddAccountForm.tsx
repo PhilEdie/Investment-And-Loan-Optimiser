@@ -1,6 +1,4 @@
 import currency from "currency.js";
-import { validateHeaderValue } from "http";
-import { stringify } from "querystring";
 import React, { useState } from "react";
 import { AccountType } from "../Model/AccountType";
 
@@ -53,31 +51,48 @@ const AddAccountForm = () => {
     }
 
     return (
-        <form>
-            <label>
-                Account Name
-                <input type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)} />
-            </label>
-            <label>
-                Account Type
-                <select value={accountType} onChange={(e) => setAccountType(parseInt(e.target.value))}>
-                    <option value={AccountType.Investment}>Investment</option>
-                    <option value={AccountType.Loan}>Loan</option>
-                </select>
-            </label>
-            <label>
-                Minimum Annual Payment
-                <input type="text" value={minimumAnnualPayment.format()} onChange={(e) => currencyInputOnChangeHandler(e.target.value, setMinimumAnnualPayment)} />
-            </label>
-            <label>
-                Balance
-                <input type="text" value={balance.format()} onChange={(e) => currencyInputOnChangeHandler(e.target.value, setBalance)} />
-            </label>
-            <label>
-                Interest Rate (%)
-                <input type="text" value={interestRateDisplay} onChange={(e) => interestRateOnChangeHandler(e.target.value)} />
-            </label>
-        </form>
+        <div className="block p-6 rounded-lg shadow-lg bg-white max-w-m">
+            <h1 className="font-extrabold">Add Account Form</h1>
+            <form>
+                <div className="form-group mb-6">
+                    <label className="form-label">Account Name</label>
+                    <input className="
+                form-control
+                border border-solid border-gray-300" type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)} />
+                </div>
+                <div className="form-group mb-6">
+                    <label className="form-label">Account Type</label>
+                    <select
+                        className="
+                form-control
+                border border-solid border-gray-300"
+                        value={accountType} onChange={(e) => setAccountType(parseInt(e.target.value))}>
+                        <option value={AccountType.Investment}>Investment</option>
+                        <option value={AccountType.Loan}>Loan</option>
+                    </select>
+                </div>
+                <div className="form-group mb-6">
+                    <label className="form-label">Minimum Annual Payment</label>
+                    <input className="
+                form-control
+                border border-solid border-gray-300" type="text" value={minimumAnnualPayment.format()} onChange={(e) => currencyInputOnChangeHandler(e.target.value, setMinimumAnnualPayment)} />
+                </div>
+                <div className="form-group mb-6">
+                    <label className="form-label">Balance</label>
+                    <input className="
+                form-control
+                border border-solid border-gray-300" type="text" value={balance.format()} onChange={(e) => currencyInputOnChangeHandler(e.target.value, setBalance)} />
+                </div>
+                <div className="form-group mb-6">
+                    <label className="form-label">
+                        Interest Rate (%)
+                    </label>
+                    <input className="
+                form-control
+                border border-solid border-gray-300" type="text" value={interestRateDisplay} onChange={(e) => interestRateOnChangeHandler(e.target.value)} />
+                </div>
+            </form >
+        </div>
     );
 }
 
