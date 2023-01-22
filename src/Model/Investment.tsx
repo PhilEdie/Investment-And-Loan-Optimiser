@@ -18,11 +18,11 @@ export class Investment extends Account {
         return `${this.getAccountName()}[interestRate=${this.getInterestRate()}, balance=${this.getBalance().format()}]`;
     }
 
-    public set balance(newBalance: currency) {
+    public setBalance(newBalance: currency) {
         if (newBalance.value < 0) {
             throw new Error("Error, a balance on an Investment object should be greater or equal to 0.");
         }
-        this.balance = newBalance;
+        super.setBalance(newBalance);
     }
 
     public makePayment(payment: currency): currency {

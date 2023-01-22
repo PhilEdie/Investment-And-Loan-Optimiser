@@ -4,7 +4,6 @@ import { Loan } from "./Model/Loan";
 import { Investment } from "./Model/Investment";
 import { Account } from "./Model/Account";
 import { AccountsController } from "./Controller/AccountsController";
-import { AccountsModel } from "./Model/AccountsModel";
 
 test("payOffLoanWithPayment", () => {
   const loan = new Loan("Loan 1", 1.05, currency(-500), currency(100));
@@ -116,24 +115,24 @@ test("sortingEqualInterestRateAccounts", () => {
 
 
 test("accumulatingInterest", () => {
-  const p = new AccountsController();
-  const m = p.getAccountsModel();
-  m.addStartingAccount(new Loan("Loan 1", 1.05, currency(-1000), currency(100)));
-  p.run(1, currency(100));
-  const history = m.getHistory();
+  const accountsController = new AccountsController();
+  const model = accountsController.getAccountsModel();
+  model.addStartingAccount(new Loan("Loan 1", 1.05, currency(-1000), currency(100)));
+  accountsController.run(1, currency(100));
+  const history = model.getHistory();
   expect(history.peek()![0].getBalance()).toEqual(currency(-945));
   expect(history.peek()![0].getInterestForPeriod()).toEqual(currency(-45));
 });
 
 test("distributeAcrossLoans1", () => {
-  const p = new AccountsController();
-  const m: AccountsModel = p.getAccountsModel();
-  m.addStartingAccount(new Loan("Loan 1", 1.05, currency(-200), currency(100)));
-  m.addStartingAccount(new Loan("Loan 2", 1.05, currency(-200), currency(100)));
-  m.addStartingAccount(new Investment("Investment 1", 1.05, currency(0)));
-  p.run(1, currency(500));
+  const accountsController = new AccountsController();
+  const model = accountsController.getAccountsModel();
+  model.addStartingAccount(new Loan("Loan 1", 1.05, currency(-200), currency(100)));
+  model.addStartingAccount(new Loan("Loan 2", 1.05, currency(-200), currency(100)));
+  model.addStartingAccount(new Investment("Investment 1", 1.05, currency(0)));
+  accountsController.run(1, currency(500));
 
-  const topOfStack = m.getHistory().peek();
+  const topOfStack = model.getHistory().peek();
 
   expect(topOfStack).toEqual([
     new Loan("Loan 1", 1.05, currency(0), currency(100), currency(0), currency(200), true),
@@ -258,12 +257,12 @@ test("defaultNameRegex", () => {
 
 
 test("allLoansPaidOffEarly", () => {
-  const p = new AccountsController();
-  const m = p.getAccountsModel();
-  m.addStartingAccount(new Loan("Loan 1", 1.05, currency(-500), currency(100)));
-  m.addStartingAccount(new Loan("Loan 2", 1.05, currency(-500), currency(100)));
-  p.run(10, currency(500));
-  expect(m.getHistory().size()).toBe(4);
+  const accountsController = new AccountsController();
+  const model = accountsController.getAccountsModel();
+  model.addStartingAccount(new Loan("Loan 1", 1.05, currency(-500), currency(100)));
+  model.addStartingAccount(new Loan("Loan 2", 1.05, currency(-500), currency(100)));
+  accountsController.run(10, currency(500));
+  expect(model.getHistory().size()).toBe(4);
 });
 
 // test("validatingNumbers", () => {
@@ -293,7 +292,7 @@ test("ensureInvestmentBalanceAlwaysPositive1", () => {
 test("ensureInvestmentBalanceAlwaysPositive2", () => {
   const inv = new Investment("i", 1, currency(1));
   expect(() => {
-    inv.balance = currency(-100);
+    inv.setBalance(currency(-100));
   }).toThrowError();
 });
 

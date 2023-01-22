@@ -1,53 +1,24 @@
 import currency from "currency.js";
-import React, { useState } from "react";
+import { useState } from "react";
+import { GlobalContextSingleton } from "../GlobalContextSingleton";
 import { AccountType } from "../Model/AccountType";
+import { FormFieldType } from "./FormFieldType";
+import useInput from "./useInput";
 
 const AddAccountForm = () => {
+    const accountsController = GlobalContextSingleton.getInstance().getAccountsController();
+    const accountName = useInput(FormFieldType.AccountName, "");
+    const minimumAnnualPayment = useInput(FormFieldType.MinimumAnnualPayment, "");
+    const balance = useInput(FormFieldType.Balance, "");
+    const interestRate = useInput(FormFieldType.InterestRate, "0.00");
+    const [accountType, setAccountType] = useState(AccountType.Loan);
 
-    const [accountName, setAccountName] = useState("");
-    const [accountType, setAccountType] = useState<AccountType>(AccountType.Loan);
-    const [minimumAnnualPayment, setMinimumAnnualPayment] = useState<currency>(currency(0));
-    const [balance, setBalance] = useState<currency>(currency(0));
-
-    const [interestRate, setInterestRate] = useState<number>(0);
-    const [interestRateDisplay, setInterestRateDisplay] = useState<string>("0.000");
-
-    function currencyInputOnChangeHandler(value: string, setter: React.Dispatch<React.SetStateAction<currency>>) {
-        value = currency(value).format();
-        setter(currency(value));
-    }
-
-    function interestRateOnChangeHandler(input: string) {
-
-        // Allow the user to clear the text field. 
-        if (input.length === 0) {
-            setInterestRate(0);
-            setInterestRateDisplay("");
-            return;
-        }
-
-        // Check if the string is a number greater or equal to 0, with a maximum of three decimal places. 
-        const regex = new RegExp(/^\d+(\.\d{0,3})?$/);
-        if (!regex.test(input)) {
-            return;
-        }
-
-        // Ensure that the user cannot enter a number greater than 100. 
-        if (Number(input) > 100) {
-            return;
-        }
-
-        setInterestRate(Number(input));
-        setInterestRateDisplay(input);
-    }
-
-    function clear() {
-        setAccountName("");
+    function clearForm() {
         setAccountType(AccountType.Loan);
-        setMinimumAnnualPayment(currency(0));
-        setBalance(currency(0));
-        setInterestRate(0);
-        setInterestRateDisplay("0.000");
+        accountName.onChange("");
+        minimumAnnualPayment.onChange(currency(0).format());
+        balance.onChange(currency(0).format());
+        interestRate.onChange("0.00");
     }
 
     return (
@@ -58,7 +29,10 @@ const AddAccountForm = () => {
                     <label className="form-label">Account Name</label>
                     <input className="
                 form-control
-                border border-solid border-gray-300" type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)} />
+                border border-solid border-gray-300" type="text" value={accountName.value} onChange={(e) => accountName.onChange(e.target.value)} />
+                    {!accountName.isValidInput &&
+                        <p>Invalid account name.</p>
+                    }
                 </div>
                 <div className="form-group mb-6">
                     <label className="form-label">Account Type</label>
@@ -75,13 +49,19 @@ const AddAccountForm = () => {
                     <label className="form-label">Minimum Annual Payment</label>
                     <input className="
                 form-control
-                border border-solid border-gray-300" type="text" value={minimumAnnualPayment.format()} onChange={(e) => currencyInputOnChangeHandler(e.target.value, setMinimumAnnualPayment)} />
+                border border-solid border-gray-300" type="text" value={minimumAnnualPayment.value} onChange={(e) => accountName.onChange(e.target.value)} />
+                    {!minimumAnnualPayment.isValidInput &&
+                        <p>Invalid minimum annual payment.</p>
+                    }
                 </div>
                 <div className="form-group mb-6">
                     <label className="form-label">Balance</label>
                     <input className="
                 form-control
-                border border-solid border-gray-300" type="text" value={balance.format()} onChange={(e) => currencyInputOnChangeHandler(e.target.value, setBalance)} />
+                border border-solid border-gray-300" type="text" value={balance.value} onChange={(e) => balance.onChange(e.target.value)} />
+                    {!balance.isValidInput &&
+                        <p>Invalid balance.</p>
+                    }
                 </div>
                 <div className="form-group mb-6">
                     <label className="form-label">
@@ -89,7 +69,10 @@ const AddAccountForm = () => {
                     </label>
                     <input className="
                 form-control
-                border border-solid border-gray-300" type="text" value={interestRateDisplay} onChange={(e) => interestRateOnChangeHandler(e.target.value)} />
+                border border-solid border-gray-300" type="text" value={interestRate.value} onChange={(e) => interestRate.onChange(e.target.value)} />
+                    {!interestRate.isValidInput &&
+                        <p>Invalid interest rate.</p>
+                    }
                 </div>
             </form >
         </div>
