@@ -2,7 +2,7 @@ import currency from "currency.js";
 import { validateHeaderValue } from "http";
 import { stringify } from "querystring";
 import React, { useState } from "react";
-import { AccountType } from "./AccountType";
+import { AccountType } from "../Model/AccountType";
 
 const AddAccountForm = () => {
 

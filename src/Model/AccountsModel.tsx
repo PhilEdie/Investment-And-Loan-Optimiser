@@ -1,27 +1,23 @@
 import { Account } from "./Account";
-
+import { Stack } from "../DataStructures/Stack";
 export class AccountsModel {
     private startingAccounts: Account[] = [];
-    private history: Account[][] = [];
+    private history: Stack<Account[]> = new Stack<Account[]>;
 
     public getStartingAccounts(): Account[] {
         return this.startingAccounts;
     }
 
-    public getHistory(): Account[][] {
-        return this.history;
-    }
-
-    public addStartingAccount(toAdd: Account): void {
+    public addStartingAccount(toAdd: Account) {
         this.startingAccounts.push(toAdd);
     }
 
-    public addToHistory(toAdd: Account[]): void {
-        this.history.push(toAdd);
+    public getHistory(): Stack<Account[]> {
+        return this.history;
     }
 
     public clearHistory(): void {
-        this.history = [];
+        this.history = new Stack<Account[]>;
     }
 
     public removeStartingAccount(toRemove: Account): void {

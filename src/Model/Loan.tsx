@@ -5,18 +5,19 @@ export class Loan extends Account {
     private _minimumPayment: currency;
     private _paidOff = false;
 
-    constructor(accountName: string, interestRate: number, balance: currency, minimumPayment: currency) {
-        super(accountName, interestRate, balance, 1);
+    constructor(accountName: string, interestRate: number, balance: currency, minimumPayment: currency, interestForPeriod?: currency, paymentForPeriod?: currency, paidOff?: boolean) {
+        super(accountName, interestRate, balance, 1, interestForPeriod, paymentForPeriod);
         if (balance.value > 0) {
             throw new Error("Error, a balance on a Model.Loan object should be negative.");
         }
         this._minimumPayment = minimumPayment;
+        if (paidOff !== undefined) {
+            this._paidOff = paidOff;
+        }
     }
 
     public static clone(toCopy: Loan) {
-        const clone = new Loan(toCopy.getAccountName(), toCopy.getInterestRate(), toCopy.getBalance(), toCopy.getMinimumPayment());
-        clone.setIsPaidOff(toCopy.isPaidOff());
-        return clone;
+        return new Loan(toCopy.getAccountName(), toCopy.getInterestRate(), toCopy.getBalance(), toCopy.getMinimumPayment(), toCopy.getInterestForPeriod(), toCopy.getPaymentForPeriod(), toCopy.isPaidOff());
     }
 
     public makePayment(payment: currency): currency {

@@ -8,19 +8,27 @@ export abstract class Account {
     private _paymentForPeriod = currency(0);
     private _priority: number;
 
-    constructor(newAccountName: string, newInterestRate: number, newBalance: currency, newPriority: number) {
-        if (newAccountName.trim() === "") {
+    constructor(accountName: string, interestRate: number, balance: currency, priority: number, interestForPeriod?: currency, paymentForPeriod?: currency) {
+        if (accountName.trim() === "") {
             throw new Error("Error. accountName should not be empty.");
         }
 
-        if (newInterestRate < 1) {
+        if (interestRate < 1) {
             throw new Error("Error, interestRate should be greater or equal to 1.");
         }
 
-        this._accountName = newAccountName;
-        this._interestRate = newInterestRate;
-        this._balance = newBalance;
-        this._priority = newPriority;
+        this._accountName = accountName;
+        this._interestRate = interestRate;
+        this._balance = balance;
+        this._priority = priority;
+
+        if (interestForPeriod !== undefined) {
+            this._interestForPeriod = interestForPeriod;
+        }
+
+        if (paymentForPeriod !== undefined) {
+            this._paymentForPeriod = paymentForPeriod;
+        }
     }
 
     public getAccountName(): string {
@@ -84,28 +92,6 @@ export abstract class Account {
                 if (this.getAccountName().localeCompare(other.getAccountName()) < 0) {
                     return -1;
                 } else if (this.getAccountName().localeCompare(other.getAccountName()) > 0) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        }
-    }
-
-    public static compare(account1: Account, account2: Account): number {
-        if (account1.getInterestRate() > account2.getInterestRate()) {
-            return -1;
-        } else if (account1.getInterestRate() < account2.getInterestRate()) {
-            return 1;
-        } else {
-            if (account1.getPriority() < account2.getPriority()) {
-                return -1;
-            } else if (account1.getPriority() > account2.getPriority()) {
-                return 1;
-            } else {
-                if (account1.getAccountName().localeCompare(account2.getAccountName()) < 0) {
-                    return -1;
-                } else if (account1.getAccountName().localeCompare(account2.getAccountName()) > 0) {
                     return 1;
                 } else {
                     return 0;

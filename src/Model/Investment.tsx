@@ -3,8 +3,8 @@ import { Account } from "./Account";
 
 export class Investment extends Account {
 
-    constructor(accountName: string, interestRate: number, balance: currency) {
-        super(accountName, interestRate, balance, 2);
+    constructor(accountName: string, interestRate: number, balance: currency, interestForPeriod?: currency, paymentForPeriod?: currency) {
+        super(accountName, interestRate, balance, 2, interestForPeriod, paymentForPeriod);
         if (balance.value < 0) {
             throw new Error("Error, a balance on an Investment object should be greater or equal to 0.");
         }
@@ -26,8 +26,8 @@ export class Investment extends Account {
     }
 
     public makePayment(payment: currency): currency {
-        this.setPaymentForPeriod(payment);
-        this.setBalance(this.balance.add(payment));
+        super.setPaymentForPeriod(payment);
+        super.setBalance(super.getBalance().add(payment));
         return currency(0);
     }
 }

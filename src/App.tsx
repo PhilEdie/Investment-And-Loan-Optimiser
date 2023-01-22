@@ -1,5 +1,5 @@
 import React from "react";
-import AddAccountForm from "./AddAccountForm";
+import AddAccountForm from "./View/AddAccountForm";
 import "./App.css";
 
 function App() {

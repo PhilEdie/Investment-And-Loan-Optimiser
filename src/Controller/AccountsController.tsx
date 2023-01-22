@@ -1,10 +1,11 @@
 import currency from "currency.js";
-import { Account } from "./Account";
-import { AccountsModel } from "./AccountsModel";
-import { AccountType } from "./AccountType";
-import { Investment } from "./Investment";
-import { Loan } from "./Loan";
-import Utilities from "./Utilities";
+import { Account } from "../Model/Account";
+import { AccountsModel } from "../Model/AccountsModel";
+import { Stack } from "../DataStructures/Stack";
+import { Investment } from "../Model/Investment";
+import { Loan } from "../Model/Loan";
+import { Utilities } from "../Utilities";
+import { AccountType } from "../Model/AccountType";
 
 export class AccountsController {
     private _accountsModel = new AccountsModel();
@@ -22,29 +23,28 @@ export class AccountsController {
         }
 
         this._accountsModel.clearHistory();
-        this._accountsModel.addToHistory(this._accountsModel.getStartingAccounts());
+        this._accountsModel.getHistory().push(this._accountsModel.getStartingAccounts());
 
         const history = this._accountsModel.getHistory();
         for (let i = 0; i < totalIterations; i++) {
             // Stop if all accounts are loans and paid off.
-            if (Utilities.containsAllLoans(history[history.length - 1])
-                && Utilities.allLoansPaidOff(history[history.length - 1])) {
+            if (Utilities.containsAllLoans(history.peek()) && Utilities.allLoansPaidOff(history.peek())) {
                 break;
             }
             this.runOnce(this._accountsModel.getHistory(), availableFunds);
         }
     }
 
-    public runOnce(history: Array<Array<Account>>, availableFunds: currency) {
+    public runOnce(history: Stack<Account[]>, availableFunds: currency) {
         if (availableFunds.value <= 0) {
             throw new Error("Error. availableFunds should be greater than 0.");
         }
-        if (history[history.length - 1].length === 0) {
+        if (history.peek() === undefined) {
             throw new Error("Error. history should not be empty.");
         }
 
         let remainingIncome = availableFunds;
-        const accounts = this.createCopyOfAccounts(history[history.length - 1]);
+        const accounts = this.createCopyOfAccounts(history.peek());
 
         // Sort accounts so high priority accounts will be paid first.
         accounts.sort((a, b) => a.getPriority() - b.getPriority());
@@ -101,8 +101,8 @@ export class AccountsController {
         }
     }
 
-    public createCopyOfAccounts(toCopy: Array<Account>): Array<Account> {
-        if (toCopy.length === 0) {
+    public createCopyOfAccounts(toCopy: Account[] | undefined): Account[] {
+        if (toCopy === undefined) {
             throw new Error("Error. toCopy shouldn't be empty.");
         }
 
@@ -164,9 +164,5 @@ export class AccountsController {
     public getAccountsModel(): AccountsModel {
         return this._accountsModel;
     }
-
-
-
-
 }
 

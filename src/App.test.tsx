@@ -1,18 +1,10 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import App from "./App";
-import { Loan } from "./Loan";
-import { Investment } from "./Investment";
-import { Account } from "./Account";
 import currency from "currency.js";
-import Utilities from "./Utilities";
-import { AccountsController } from "./AccountsController";
-
-// test("renders learn react link", () => {
-//   render(<App />);
-//   const linkElement = screen.getByText(/learn react/i);
-//   expect(linkElement).toBeInTheDocument();
-// });
+import { Utilities } from "./Utilities";
+import { Loan } from "./Model/Loan";
+import { Investment } from "./Model/Investment";
+import { Account } from "./Model/Account";
+import { AccountsController } from "./Controller/AccountsController";
+import { AccountsModel } from "./Model/AccountsModel";
 
 test("payOffLoanWithPayment", () => {
   const loan = new Loan("Loan 1", 1.05, currency(-500), currency(100));
@@ -122,19 +114,20 @@ test("sortingEqualInterestRateAccounts", () => {
   expect(toSort).toEqual(expected);
 });
 
-/*
+
 test("accumulatingInterest", () => {
   const p = new AccountsController();
   const m = p.getAccountsModel();
-  p.getAccountsModel().addStartingAccount(new Loan("Loan 1", 1.05, currency(-1000), currency(100)));
+  m.addStartingAccount(new Loan("Loan 1", 1.05, currency(-1000), currency(100)));
   p.run(1, currency(100));
-  expect(m.getHistory().peek().get(0).getBalance()).toBe(-945);
-  expect(m.getHistory().peek().get(0).getInterestForPeriod()).toBe(-45);
+  const history = m.getHistory();
+  expect(history.peek()![0].getBalance()).toEqual(currency(-945));
+  expect(history.peek()![0].getInterestForPeriod()).toEqual(currency(-45));
 });
 
 test("distributeAcrossLoans1", () => {
   const p = new AccountsController();
-  const m = p.getAccountsModel();
+  const m: AccountsModel = p.getAccountsModel();
   m.addStartingAccount(new Loan("Loan 1", 1.05, currency(-200), currency(100)));
   m.addStartingAccount(new Loan("Loan 2", 1.05, currency(-200), currency(100)));
   m.addStartingAccount(new Investment("Investment 1", 1.05, currency(0)));
@@ -142,12 +135,12 @@ test("distributeAcrossLoans1", () => {
 
   const topOfStack = m.getHistory().peek();
 
-  expect(topOfStack.toString()).toEqual(
-  "[Loan 1[interestRate=1.05, balance=$0.00, minimumPayment=$100.00], "
-  + "Loan 2[interestRate=1.05, balance=$0.00, minimumPayment=$100.00], "
-  + "Investment 1[interestRate=1.05, balance=$105.00]]"
-  );
-  expect(Utilities.getPaidOffLoanNames(topOfStack)).toEqual("Loan 1, Loan 2");
+  expect(topOfStack).toEqual([
+    new Loan("Loan 1", 1.05, currency(0), currency(100), currency(0), currency(200), true),
+    new Loan("Loan 2", 1.05, currency(0), currency(100), currency(0), currency(200), true),
+    new Investment("Investment 1", 1.05, currency(105), currency(5), currency(100))
+  ]);
+  expect(Utilities.allLoansPaidOff(topOfStack)).toBe(true);
 });
 
 test("defaultNameRegex", () => {
@@ -163,105 +156,105 @@ test("defaultNameRegex", () => {
   expect(Utilities.isDefaultName("investment10")).toBe(false);
 });
 
-test("testInvalidInputs1", () => {
-  const f = new AccountForm();
-  f.setBalance("1000000000000");
-  f.setMinimumPayment("1000000000000");
-  f.setInterestRate("1000");
-  f.setIncome("1000000000000");
-  f.setTotalPeriods("2000");
-  expect(f.getBalanceValue()).toBe(0.0);
-  expect(f.getMinimumPaymentValue()).toBe(0.0);
-  expect(f.getInterestRateValue()).toBe(1.0);
-  expect(f.getIncomeValue()).toBe(0.0);
-  expect(f.getTotalPeriods()).toBe(1);
-});
+// test("testInvalidInputs1", () => {
+//   const f = new AccountsForm();
+//   f.setBalance("1000000000000");
+//   f.setMinimumPayment("1000000000000");
+//   f.setInterestRate("1000");
+//   f.setIncome("1000000000000");
+//   f.setTotalPeriods("2000");
+//   expect(f.getBalanceValue()).toBe(0.0);
+//   expect(f.getMinimumPaymentValue()).toBe(0.0);
+//   expect(f.getInterestRateValue()).toBe(1.0);
+//   expect(f.getIncomeValue()).toBe(0.0);
+//   expect(f.getTotalPeriods()).toBe(1);
+// });
 
-test("testInvalidInputs2Investment", () => {
-  const f = new AccountForm();
-  f.setBalance("-1");
-  f.setMinimumPayment("-1");
-  f.setInterestRate("-1");
-  f.setIncome("-1");
-  f.setTotalPeriods("-1");
-  expect(f.getBalanceValue()).toBe(0.0);
-  expect(f.getMinimumPaymentValue()).toBe(0.0);
-  expect(f.getInterestRateValue()).toBe(1.0);
-  expect(f.getIncomeValue()).toBe(0.0);
-  expect(f.getTotalPeriods()).toBe(1);
-});
+// test("testInvalidInputs2Investment", () => {
+//   const f = new AccountForm();
+//   f.setBalance("-1");
+//   f.setMinimumPayment("-1");
+//   f.setInterestRate("-1");
+//   f.setIncome("-1");
+//   f.setTotalPeriods("-1");
+//   expect(f.getBalanceValue()).toBe(0.0);
+//   expect(f.getMinimumPaymentValue()).toBe(0.0);
+//   expect(f.getInterestRateValue()).toBe(1.0);
+//   expect(f.getIncomeValue()).toBe(0.0);
+//   expect(f.getTotalPeriods()).toBe(1);
+// });
 
-test("testInvalidInputs2Loan", () => {
-  const f = new AccountForm();
-  f.setType(Loan.class);
-  f.setBalance("-1");
-  f.setMinimumPayment("-1");
-  f.setInterestRate("-1");
-  f.setIncome("-1");
-  f.setTotalPeriods("-1");
-  expect(f.getBalanceValue()).toBe(-1.0);
-  expect(f.getMinimumPaymentValue()).toBe(0.0);
-  expect(f.getInterestRateValue()).toBe(1.0);
-  expect(f.getIncomeValue()).toBe(0.0);
-  expect(f.getTotalPeriods()).toBe(1);
-});
+// test("testInvalidInputs2Loan", () => {
+//   const f = new AccountForm();
+//   f.setType(Loan.class);
+//   f.setBalance("-1");
+//   f.setMinimumPayment("-1");
+//   f.setInterestRate("-1");
+//   f.setIncome("-1");
+//   f.setTotalPeriods("-1");
+//   expect(f.getBalanceValue()).toBe(-1.0);
+//   expect(f.getMinimumPaymentValue()).toBe(0.0);
+//   expect(f.getInterestRateValue()).toBe(1.0);
+//   expect(f.getIncomeValue()).toBe(0.0);
+//   expect(f.getTotalPeriods()).toBe(1);
+// });
 
-test("testInvalidInputs3", () => {
-  const f = new AccountForm();
-  f.setBalance("0");
-  f.setMinimumPayment("0");
-  f.setInterestRate("0");
-  f.setIncome("0");
-  f.setTotalPeriods("0");
-  expect(f.getBalanceValue()).toBe(0.0);
-  expect(f.getMinimumPaymentValue()).toBe(0.0);
-  expect(f.getInterestRateValue()).toBe(1.0);
-  expect(f.getIncomeValue()).toBe(0.0);
-  expect(f.getTotalPeriods()).toBe(1);
-});
+// test("testInvalidInputs3", () => {
+//   const f = new AccountForm();
+//   f.setBalance("0");
+//   f.setMinimumPayment("0");
+//   f.setInterestRate("0");
+//   f.setIncome("0");
+//   f.setTotalPeriods("0");
+//   expect(f.getBalanceValue()).toBe(0.0);
+//   expect(f.getMinimumPaymentValue()).toBe(0.0);
+//   expect(f.getInterestRateValue()).toBe(1.0);
+//   expect(f.getIncomeValue()).toBe(0.0);
+//   expect(f.getTotalPeriods()).toBe(1);
+// });
 
-test("testInvalidInputs4", () => {
-  const f = new AccountForm();
-  f.setBalance("number");
-  f.setMinimumPayment("number");
-  f.setInterestRate("number");
-  f.setIncome("number");
-  f.setTotalPeriods("number");
-  expect(f.getBalanceValue()).toBe(0.0);
-  expect(f.getMinimumPaymentValue()).toBe(0.0);
-  expect(f.getInterestRateValue()).toBe(1.0);
-  expect(f.getIncomeValue()).toBe(0.0);
-  expect(f.getTotalPeriods()).toBe(1);
-});
+// test("testInvalidInputs4", () => {
+//   const f = new AccountForm();
+//   f.setBalance("number");
+//   f.setMinimumPayment("number");
+//   f.setInterestRate("number");
+//   f.setIncome("number");
+//   f.setTotalPeriods("number");
+//   expect(f.getBalanceValue()).toBe(0.0);
+//   expect(f.getMinimumPaymentValue()).toBe(0.0);
+//   expect(f.getInterestRateValue()).toBe(1.0);
+//   expect(f.getIncomeValue()).toBe(0.0);
+//   expect(f.getTotalPeriods()).toBe(1);
+// });
 
-test("testInvalidInputs5", () => {
-  const f = new AccountForm();
-  f.setBalance("1.5");
-  f.setMinimumPayment("1.5");
-  f.setInterestRate("1.5");
-  f.setIncome("1.5");
-  f.setTotalPeriods("1.5");
-  expect(f.getBalanceValue()).toBe(1.5);
-  expect(f.getMinimumPaymentValue()).toBe(1.5);
-  expect(f.getInterestRateValue()).toBe(1.015);
-  expect(f.getIncomeValue()).toBe(1.5);
-  expect(f.getTotalPeriods()).toBe(1);
-});
+// test("testInvalidInputs5", () => {
+//   const f = new AccountForm();
+//   f.setBalance("1.5");
+//   f.setMinimumPayment("1.5");
+//   f.setInterestRate("1.5");
+//   f.setIncome("1.5");
+//   f.setTotalPeriods("1.5");
+//   expect(f.getBalanceValue()).toBe(1.5);
+//   expect(f.getMinimumPaymentValue()).toBe(1.5);
+//   expect(f.getInterestRateValue()).toBe(1.015);
+//   expect(f.getIncomeValue()).toBe(1.5);
+//   expect(f.getTotalPeriods()).toBe(1);
+// });
 
-test("testInvalidInputs6", () => {
-  const f = new AccountForm();
-  f.setType(Loan.class);
-  f.setBalance("1.5");
-  f.setMinimumPayment("1.5");
-  f.setInterestRate("1.5");
-  f.setIncome("1.5");
-  f.setTotalPeriods("1.5");
-  expect(f.getBalanceValue()).toBe(-1.5);
-  expect(f.getMinimumPaymentValue()).toBe(1.5);
-  expect(f.getInterestRateValue()).toBe(1.015);
-  expect(f.getIncomeValue()).toBe(1.5);
-  expect(f.getTotalPeriods()).toBe(1);
-});
+// test("testInvalidInputs6", () => {
+//   const f = new AccountForm();
+//   f.setType(Loan.class);
+//   f.setBalance("1.5");
+//   f.setMinimumPayment("1.5");
+//   f.setInterestRate("1.5");
+//   f.setIncome("1.5");
+//   f.setTotalPeriods("1.5");
+//   expect(f.getBalanceValue()).toBe(-1.5);
+//   expect(f.getMinimumPaymentValue()).toBe(1.5);
+//   expect(f.getInterestRateValue()).toBe(1.015);
+//   expect(f.getIncomeValue()).toBe(1.5);
+//   expect(f.getTotalPeriods()).toBe(1);
+// });
 
 
 test("allLoansPaidOffEarly", () => {
@@ -270,54 +263,54 @@ test("allLoansPaidOffEarly", () => {
   m.addStartingAccount(new Loan("Loan 1", 1.05, currency(-500), currency(100)));
   m.addStartingAccount(new Loan("Loan 2", 1.05, currency(-500), currency(100)));
   p.run(10, currency(500));
-  expect(m.getHistory().length).toBe(4);
+  expect(m.getHistory().size()).toBe(4);
 });
 
-test("validatingNumbers", () => {
-  expect(Utilities.validateNumber("0", 1)).toBe(true);
-  expect(Utilities.validateNumber("-100", 10)).toBe(false);
-  expect(Utilities.validateNumber("100000000000000000000", 10)).toBe(false);
-  expect(Utilities.validateNumber("ten", 10)).toBe(false);
-});
+// test("validatingNumbers", () => {
+//   expect(Utilities.validateNumber("0", 1)).toBe(true);
+//   expect(Utilities.validateNumber("-100", 10)).toBe(false);
+//   expect(Utilities.validateNumber("100000000000000000000", 10)).toBe(false);
+//   expect(Utilities.validateNumber("ten", 10)).toBe(false);
+// });
 
-test("stringFormatting", () => {
-  expect(Utilities.convertToDollarFormat(1234.5678)).toBe("$1,234.57");
-  expect(Utilities.convertToPercentageFormat(12.345678)).toBe("12.35%");
-});
+// test("stringFormatting", () => {
+//   expect(Utilities.convertToDollarFormat(1234.5678)).toBe("$1,234.57");
+//   expect(Utilities.convertToPercentageFormat(12.345678)).toBe("12.35%");
+// });
 
 test("ensureAccountBalanceInterestRateAlwaysPositive", () => {
   expect(() => {
-  new Investment("i", -1, currency(1));
+    new Investment("i", -1, currency(1));
   }).toThrowError();
 });
 
 test("ensureInvestmentBalanceAlwaysPositive1", () => {
   expect(() => {
-  new Investment("i", 1, currency(-1));
+    new Investment("i", 1, currency(-1));
   }).toThrowError();
 });
 
 test("ensureInvestmentBalanceAlwaysPositive2", () => {
   const inv = new Investment("i", 1, currency(1));
   expect(() => {
-  inv.balance = currency(-100);
+    inv.balance = currency(-100);
   }).toThrowError();
 });
 
-test("ensureLoanBalanceAlwaysNegative1", () => {
+test("ensureNewLoanBalanceAlwaysNegative", () => {
   expect(() => {
-  new Loan("i", 1, currency(1), currency(1));
+    new Loan("i", 1, currency(1), currency(1));
   }).toThrowError();
 });
 
 test("ensureLoanBalanceAlwaysNegative2", () => {
   const loan = new Loan("i", 1, currency(-1), currency(1));
   expect(() => {
-  loan.balance = (currency(100));
+    loan.setBalance(currency(100));
   }).toThrowError();
 });
 
-*/
+
 
 
 
