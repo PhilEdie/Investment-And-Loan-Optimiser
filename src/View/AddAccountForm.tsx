@@ -1,13 +1,19 @@
 import currency from "currency.js";
 import { useState } from "react";
-import { GlobalContextSingleton } from "../GlobalContextSingleton";
+import { Account } from "../Model/Account";
+import { AccountsModel } from "../Model/AccountsModel";
 import { AccountType } from "../Model/AccountType";
 import { Investment } from "../Model/Investment";
+import { Loan } from "../Model/Loan";
 import { FormFieldType } from "./FormFieldType";
 import useInput from "./useInput";
 
-const AddAccountForm = () => {
-    const accountsController = GlobalContextSingleton.getInstance().getAccountsController();
+export interface AddAccountFormProps {
+    addAccount: (newAccount: Account) => void;
+}
+
+
+const AddAccountForm = ({ addAccount }: AddAccountFormProps) => {
     const accountName = useInput(FormFieldType.AccountName, "");
     const minimumAnnualPayment = useInput(FormFieldType.MinimumAnnualPayment, "");
     const balance = useInput(FormFieldType.Balance, "");
@@ -22,10 +28,32 @@ const AddAccountForm = () => {
         interestRate.onChange("0.00");
     }
 
+    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        if (!(accountName.isValidInput
+            && minimumAnnualPayment.isValidInput
+            && balance.isValidInput
+            && interestRate.isValidInput)) {
+            alert("Please enter valid stuff.");
+            return;
+        }
+
+        if (accountType == AccountType.Loan) {
+            addAccount(new Loan(accountName.value, 1 + parseFloat(interestRate.value), currency(balance.value), currency(minimumAnnualPayment.value)));
+        }
+
+        if (accountType == AccountType.Investment) {
+            addAccount(new Investment(accountName.value, 1 + parseFloat(interestRate.value), currency(balance.value)));
+        }
+    }
+
     return (
         <div className="block p-6 rounded-lg shadow-lg bg-white max-w-m">
             <h1 className="font-extrabold">Add Account Form</h1>
-            <form>
+            <div className="form-control">
+                <button onClick={(e) => clearForm()}>Clear</button>
+            </div>
+            <form onSubmit={(e) => handleSubmit(e)}>
                 <div className="form-group mb-6">
                     <label className="form-label">Account Name</label>
                     <input className="
@@ -76,7 +104,7 @@ const AddAccountForm = () => {
                     }
                 </div>
                 <div className="form-control">
-                    <button onClick={() => accountsController.getAccountsModel().addStartingAccount(new Investment("1", 1.05, currency(0)))}>Submit</button>
+                    <input type="submit" />
                 </div>
             </form >
         </div>

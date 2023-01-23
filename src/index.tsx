@@ -8,11 +8,6 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-export interface IGlobalContext {
-  accountsController: AccountsController;
-}
-
-export const GlobalContext = React.createContext({ accountsController: new AccountsController() });
 
 root.render(
   <React.StrictMode>

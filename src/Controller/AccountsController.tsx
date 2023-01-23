@@ -9,22 +9,9 @@ import { AccountType } from "../Model/AccountType";
 
 export class AccountsController {
 
-    // private static instance: AccountsController;
     private _accountsModel = new AccountsModel();
 
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    // private constructor() { }
-
-    // public static getInstance(): AccountsController {
-    //     if (AccountsController.instance === undefined) {
-    //         AccountsController.instance = new AccountsController();
-    //     }
-    //     return AccountsController.instance;
-    // }
-
     public clear() {
-        // AccountsController.instance = new AccountsController();
         this._accountsModel = new AccountsModel();
     }
 
@@ -181,5 +168,9 @@ export class AccountsController {
 
     public getAccountsModel(): AccountsModel {
         return this._accountsModel;
+    }
+
+    public setAccountsModel(model: AccountsModel) {
+        this._accountsModel = model;
     }
 }

@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { GlobalContext } from "../GlobalContextSingleton";
 import { FormFieldType } from "./FormFieldType";
 import { ValidationRules } from "./ValidationRules";
 
@@ -15,7 +14,10 @@ export function useInput(type: FormFieldType, initialValue: string) {
             case FormFieldType.AccountName:
                 isValid = ValidationRules.isValidName(value);
                 break;
-            case (FormFieldType.Balance || FormFieldType.MinimumAnnualPayment):
+            case (FormFieldType.Balance):
+                isValid = ValidationRules.isValidCurrency(value);
+                break;
+            case (FormFieldType.MinimumAnnualPayment):
                 isValid = ValidationRules.isValidCurrency(value);
                 break;
             case FormFieldType.InterestRate:

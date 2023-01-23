@@ -1,40 +1,43 @@
-import { GlobalContextSingleton } from "../GlobalContextSingleton";
+import { Account } from "../Model/Account";
 
-const StartingAccountsTable = () => {
-    const startingAccounts = GlobalContextSingleton
-        .getInstance()
-        .getAccountsController()
-        .getAccountsModel()
-        .getStartingAccounts();
+export interface StartingAccountsTableProps {
+    startingAccounts: Account[];
+}
+
+const StartingAccountsTable = ({ startingAccounts }: StartingAccountsTableProps) => {
 
     return (
         <table>
-            <tr>
-                <th>Account Name</th>
-                <th>Account Type</th>
-                <th>Balance</th>
-                <th>Interest Rate</th>
-                <th>Minimum Payment (If Loan)</th>
-            </tr>
-            {startingAccounts.map((account) => (
+            <thead>
                 <tr>
-                    <td>
-                        {account.getAccountName()}
-                    </td>
-                    <td>
-
-                    </td>
-                    <td>
-                        {account.getBalance().format()}
-                    </td>
-                    <td>
-                        {account.getInterestRate()}
-                    </td>
-                    <td>
-
-                    </td>
+                    <th>Account Name</th>
+                    <th>Account Type</th>
+                    <th>Balance</th>
+                    <th>Interest Rate</th>
+                    <th>Minimum Payment (If Loan)</th>
                 </tr>
-            ))}
+            </thead>
+            <tbody>
+
+                {startingAccounts.map((account) => (
+                    <tr key={account.getAccountName()}>
+                        <td>
+                            {account.getAccountName()}
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                            {account.getBalance().format()}
+                        </td>
+                        <td>
+                            {account.getInterestRate()}
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
         </table>
 
     );

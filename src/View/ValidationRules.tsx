@@ -1,5 +1,3 @@
-import { GlobalContextSingleton } from "../GlobalContextSingleton";
-
 export class ValidationRules {
     public static isValidCurrency(input: string): boolean {
         const regex = /^(\$)?(([1-9]\d{0,2}(,\d{3})*)|([1-9]\d*)|(0))(\.\d{2})?$/
@@ -7,15 +5,10 @@ export class ValidationRules {
     }
 
     public static isValidName(input: string): boolean {
-        const accounts = GlobalContextSingleton
-            .getInstance()
-            .getAccountsController()
-            .getAccountsModel()
-            .getStartingAccounts();
 
         if (input.length == 0
-            || input.length >= 24
-            || accounts.some(account => account.getAccountName() == input)) {
+            || input.length >= 24) {
+            // || accounts.some(account => account.getAccountName() == input)) {
             return false;
         }
         return true;
