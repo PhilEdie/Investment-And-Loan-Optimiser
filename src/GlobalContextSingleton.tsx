@@ -15,3 +15,5 @@ export class GlobalContextSingleton {
         return GlobalContextSingleton.instance;
     }
 }
+export { GlobalContext };
+

@@ -2,6 +2,7 @@ import currency from "currency.js";
 import { useState } from "react";
 import { GlobalContextSingleton } from "../GlobalContextSingleton";
 import { AccountType } from "../Model/AccountType";
+import { Investment } from "../Model/Investment";
 import { FormFieldType } from "./FormFieldType";
 import useInput from "./useInput";
 
@@ -73,6 +74,9 @@ const AddAccountForm = () => {
                     {!interestRate.isValidInput &&
                         <p>Invalid interest rate.</p>
                     }
+                </div>
+                <div className="form-control">
+                    <button onClick={() => accountsController.getAccountsModel().addStartingAccount(new Investment("1", 1.05, currency(0)))}>Submit</button>
                 </div>
             </form >
         </div>
