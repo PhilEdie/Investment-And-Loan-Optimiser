@@ -16,6 +16,7 @@ function App() {
     <div>
       <AddAccountForm addAccount={addAccount} />
       <StartingAccountsTable startingAccounts={startingAccounts} />
+      <ResultsTable />
     </div>
   );
 }
