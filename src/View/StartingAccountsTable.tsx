@@ -1,4 +1,6 @@
+import { type } from "os";
 import { Account } from "../Model/Account";
+import { Loan } from "../Model/Loan";
 
 export interface StartingAccountsTableProps {
     startingAccounts: Account[];
@@ -25,15 +27,13 @@ const StartingAccountsTable = ({ startingAccounts }: StartingAccountsTableProps)
                             {account.getAccountName()}
                         </td>
                         <td>
-
+                            {account instanceof Loan ? "Loan" : "Investment" }
                         </td>
                         <td>
                             {account.getBalance().format()}
                         </td>
                         <td>
                             {account.getInterestRate()}
-                        </td>
-                        <td>
                         </td>
                     </tr>
                 ))}

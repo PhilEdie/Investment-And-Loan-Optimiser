@@ -23,4 +23,8 @@ export class Stack<T> implements IStack<T> {
     size(): number {
         return this.storage.length;
     }
+    
+    toArray(): T[]{
+        return this.storage;
+    }
 }

@@ -13,6 +13,10 @@ export class AccountsModel {
         this._startingAccounts.push(toAdd);
     }
 
+    public setStartingAccounts(toSet: Account[]) {
+        this._startingAccounts = toSet;
+    }
+
     public removeStartingAccount(toRemove: Account): void {
         const index = this._startingAccounts.indexOf(toRemove);
         this._startingAccounts.splice(index, 1);

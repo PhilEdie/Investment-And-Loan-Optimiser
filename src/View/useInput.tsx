@@ -1,3 +1,4 @@
+import currency from "currency.js";
 import { useContext, useState } from "react";
 import { FormFieldType } from "./FormFieldType";
 import { ValidationRules } from "./ValidationRules";
@@ -5,8 +6,9 @@ import { ValidationRules } from "./ValidationRules";
 
 export function useInput(type: FormFieldType, initialValue: string) {
     const _type = type;
-    const [value, setValue] = useState(initialValue);
+    const [value, setValue] = useState<string>(initialValue);
     const [isValidInput, setIsValidInput] = useState<boolean>(false);
+    const [displayValue, setDisplayValue] = useState<string>();
 
     const handleChange = (value: string) => {
         let isValid = false;
@@ -30,10 +32,38 @@ export function useInput(type: FormFieldType, initialValue: string) {
 
         setValue(value);
         setIsValidInput(isValid);
+        if(isValid){
+            handleDisplayValueChange(value);
+        } else {
+            handleDisplayValueChange("");
+        }
     }
+
+
+    const handleDisplayValueChange = (value : string) => {
+        if(value.length === 0){
+            setDisplayValue("");
+            return;
+        }
+        switch(_type){
+            case FormFieldType.Balance:
+                setDisplayValue(currency(parseFloat(value)).format());
+                break;
+            case FormFieldType.MinimumAnnualPayment:
+                setDisplayValue(currency(parseFloat(value)).format());
+                break;
+            case FormFieldType.InterestRate:
+                setDisplayValue(value + "%");
+            break;
+            default:
+                setDisplayValue(value);
+        }
+    }
+
 
     return {
         value,
+        displayValue,
         isValidInput,
         onChange: handleChange
     };

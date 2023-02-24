@@ -1,31 +1,16 @@
 export class ValidationRules {
     public static isValidCurrency(input: string): boolean {
-        const regex = /^(\$)?(([1-9]\d{0,2}(,\d{3})*)|([1-9]\d*)|(0))(\.\d{2})?$/
+        const regex = /^(?!0\.00)\d{1,8}(\.\d{1,2})?$/;
         return regex.test(input);
     }
 
     public static isValidName(input: string): boolean {
-
-        if (input.length == 0
-            || input.length >= 24) {
-            // || accounts.some(account => account.getAccountName() == input)) {
-            return false;
-        }
-        return true;
+        const regex = /^[a-zA-Z0-9]{1,24}$/;
+        return regex.test(input);
     }
 
-    public static isValidInterestRate(input: string): boolean {
-        // Check if the string is a number greater or equal to 0, with a maximum of three decimal places. 
-        const regex = new RegExp(/^\d+(\.\d{0,3})?$/);
-        if (!regex.test(input)) {
-            return false;
-        }
-
-        // Ensure that the user cannot enter a number greater than 100. 
-        if (Number(input) > 100) {
-            return false;
-        }
-
-        return true;
+    public static isValidInterestRate(input: string): boolean {        
+        const regex = /^(100(\.0{1,3})?|\d{1,2}(\.\d{1,3})?|0\.\d{1,3})$/;
+        return regex.test(input);
     }
 }

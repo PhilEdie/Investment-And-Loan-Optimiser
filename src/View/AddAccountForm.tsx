@@ -23,8 +23,8 @@ const AddAccountForm = ({ addAccount }: AddAccountFormProps) => {
     function clearForm() {
         setAccountType(AccountType.Loan);
         accountName.onChange("");
-        minimumAnnualPayment.onChange(currency(0).format());
-        balance.onChange(currency(0).format());
+        minimumAnnualPayment.onChange("0.00");
+        balance.onChange("0.00");
         interestRate.onChange("0.00");
     }
 
@@ -39,11 +39,11 @@ const AddAccountForm = ({ addAccount }: AddAccountFormProps) => {
         }
 
         if (accountType == AccountType.Loan) {
-            addAccount(new Loan(accountName.value, 1 + parseFloat(interestRate.value), currency(balance.value), currency(minimumAnnualPayment.value)));
+            addAccount(new Loan(accountName.value, 1 + parseFloat(interestRate.value), currency(-1 * parseFloat(balance.value)), currency(parseFloat(minimumAnnualPayment.value))));
         }
 
         if (accountType == AccountType.Investment) {
-            addAccount(new Investment(accountName.value, 1 + parseFloat(interestRate.value), currency(balance.value)));
+            addAccount(new Investment(accountName.value, 1 + parseFloat(interestRate.value), currency(parseFloat(balance.value))));
         }
     }
 
@@ -78,7 +78,11 @@ const AddAccountForm = ({ addAccount }: AddAccountFormProps) => {
                     <label className="form-label">Minimum Annual Payment</label>
                     <input className="
                 form-control
-                border border-solid border-gray-300" type="text" value={minimumAnnualPayment.value} onChange={(e) => accountName.onChange(e.target.value)} />
+                border border-solid border-gray-300" type="text" value={minimumAnnualPayment.value} onChange={(e) => minimumAnnualPayment.onChange(e.target.value)} />
+                    <input className="
+                form-control
+                border border-solid border-gray-300" disabled value={minimumAnnualPayment.displayValue}/>
+                    
                     {!minimumAnnualPayment.isValidInput &&
                         <p>Invalid minimum annual payment.</p>
                     }
@@ -88,6 +92,9 @@ const AddAccountForm = ({ addAccount }: AddAccountFormProps) => {
                     <input className="
                 form-control
                 border border-solid border-gray-300" type="text" value={balance.value} onChange={(e) => balance.onChange(e.target.value)} />
+                    <input className="
+                form-control
+                border border-solid border-gray-300" disabled value={balance.displayValue}/>
                     {!balance.isValidInput &&
                         <p>Invalid balance.</p>
                     }
@@ -99,6 +106,9 @@ const AddAccountForm = ({ addAccount }: AddAccountFormProps) => {
                     <input className="
                 form-control
                 border border-solid border-gray-300" type="text" value={interestRate.value} onChange={(e) => interestRate.onChange(e.target.value)} />
+                <input className="
+                form-control
+                border border-solid border-gray-300" disabled value={interestRate.displayValue}/>
                     {!interestRate.isValidInput &&
                         <p>Invalid interest rate.</p>
                     }

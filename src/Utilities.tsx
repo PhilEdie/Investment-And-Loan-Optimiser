@@ -52,4 +52,10 @@ export class Utilities {
     public static getPaidOffLoans(accounts: Account[]): Account[] {
         return accounts.filter(account => account instanceof Loan && account.isPaidOff());
     }
+
+    public static getPaidOffLoansAsString(accounts: Account[]): string {
+        const paidOffLoans : Account[] = this.getPaidOffLoans(accounts);
+        const paidOffLoansStringArray : string[] = paidOffLoans.map((account) => account.getAccountName());
+        return paidOffLoansStringArray.join(", ");
+    }
 }

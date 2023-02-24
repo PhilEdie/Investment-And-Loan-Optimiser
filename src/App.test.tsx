@@ -33,7 +33,7 @@ test("sortingAccounts1", () => {
 
   toSort = toSort.sort((a, b) => a.compareTo(b));
   expect(toSort).toEqual(expected);
-});
+}); 
 
 test("sortingAccounts2", () => {
   let toSort: Account[] = [];

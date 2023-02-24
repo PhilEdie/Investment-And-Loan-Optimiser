@@ -1,11 +1,11 @@
 import currency from "currency.js";
 import { Account } from "../Model/Account";
 import { AccountsModel } from "../Model/AccountsModel";
-import { Stack } from "../DataStructures/Stack";
 import { Investment } from "../Model/Investment";
 import { Loan } from "../Model/Loan";
 import { Utilities } from "../Utilities";
 import { AccountType } from "../Model/AccountType";
+import { IStack } from "../DataStructures/IStack";
 
 export class AccountsController {
 
@@ -40,7 +40,7 @@ export class AccountsController {
         }
     }
 
-    public runOnce(history: Stack<Account[]>, availableFunds: currency) {
+    public runOnce(history: IStack<Account[]>, availableFunds: currency) {
         if (availableFunds.value <= 0) {
             throw new Error("Error. availableFunds should be greater than 0.");
         }

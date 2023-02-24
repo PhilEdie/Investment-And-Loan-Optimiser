@@ -3,5 +3,6 @@ export interface IStack<T> {
     pop(): T | undefined;
     peek(): T | undefined;
     size(): number;
+    toArray(): T[];
 }
 
