@@ -7,7 +7,7 @@ import { Loan } from "../Model/Loan";
 import { FormFieldType } from "./FormFieldType";
 import useInput from "./useInput";
 
-import {addAccount} from "../Model/StartingAccountsSlice";
+import {addStartingAccount, clearStartingAccounts} from "../Model/StartingAccountsSlice";
 
 const AddAccountForm = () => {
     const accountName = useInput(FormFieldType.AccountName, "");
@@ -20,11 +20,13 @@ const AddAccountForm = () => {
 
 
     function clearForm() {
+        dispatch(clearStartingAccounts());
+        // Set default values for inputs. 
         setAccountType(AccountType.Loan);
         accountName.onChange("");
         minimumAnnualPayment.onChange("0.00");
         balance.onChange("0.00");
-        interestRate.onChange("0.00");
+        interestRate.onChange("0.000");
     }
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -38,11 +40,11 @@ const AddAccountForm = () => {
         }
 
         if (accountType == AccountType.Loan) {
-            dispatch(addAccount(new Loan(accountName.value, 1 + parseFloat(interestRate.value), currency(-1 * parseFloat(balance.value)), currency(parseFloat(minimumAnnualPayment.value)))));
+            dispatch(addStartingAccount(new Loan(accountName.value, 1 + parseFloat(interestRate.value), currency(-1 * parseFloat(balance.value)), currency(parseFloat(minimumAnnualPayment.value)))));
         }
 
         if (accountType == AccountType.Investment) {
-            addAccount(new Investment(accountName.value, 1 + parseFloat(interestRate.value), currency(parseFloat(balance.value))));
+            dispatch(addStartingAccount(new Investment(accountName.value, 1 + parseFloat(interestRate.value), currency(parseFloat(balance.value)))));
         }
     }
 

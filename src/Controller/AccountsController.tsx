@@ -6,20 +6,24 @@ import { Loan } from "../Model/Loan";
 import { Utilities } from "../Utilities";
 import { AccountType } from "../Model/AccountType";
 import { IStack } from "../DataStructures/IStack";
+import { Stack } from "../DataStructures/Stack";
 
 export class AccountsController {
 
-    private _accountsModel = new AccountsModel();
+    // private _accountsModel = new AccountsModel();
 
-    public clear() {
-        this._accountsModel = new AccountsModel();
-    }
+    // public clear() {
+    //     this._accountsModel = new AccountsModel();
+    // }
 
-    public run(totalIterations: number, availableFunds: currency) {
+    public run(startingAccounts: Account[], totalIterations: number, availableFunds: currency) {
+        
+        const history : IStack<Account[]> = new Stack<Account[]>;
+        
         if (totalIterations <= 0) {
             throw new Error("Error. totalIterations should be greater than 0.");
         }
-        if (this._accountsModel.getStartingAccounts().length === 0) {
+        if (startingAccounts.length === 0) {
             throw new Error("Error. Starting accounts should not be empty.");
         }
 
@@ -27,16 +31,14 @@ export class AccountsController {
             throw new Error("Error. availableFunds should be greater than 0.");
         }
 
-        this._accountsModel.clearHistory();
-        this._accountsModel.getHistory().push(this._accountsModel.getStartingAccounts());
+        history.push(startingAccounts);
 
-        const history = this._accountsModel.getHistory();
         for (let i = 0; i < totalIterations; i++) {
             // Stop if all accounts are loans and paid off.
             if (Utilities.containsAllLoans(history.peek()) && Utilities.allLoansPaidOff(history.peek())) {
                 break;
             }
-            this.runOnce(this._accountsModel.getHistory(), availableFunds);
+            this.runOnce(history, availableFunds);
         }
     }
 
@@ -124,13 +126,13 @@ export class AccountsController {
         return copied;
     }
 
-    public getTotalMinimumPayments(): currency {
-        if (this._accountsModel.getStartingAccounts().length === 0) {
+    public getTotalMinimumPayments(startingAccounts: Account[]): currency {
+        if (startingAccounts.length === 0) {
             throw new Error("Error. accountsModel should have at least one account.");
         }
 
         const sum = currency(0);
-        for (const account of this._accountsModel.getStartingAccounts()) {
+        for (const account of startingAccounts) {
             if (account instanceof Loan) {
                 sum.add(account.getMinimumPayment());
             }
@@ -138,39 +140,31 @@ export class AccountsController {
         return sum;
     }
 
-    public removeAccount(accountName: string) {
-        for (const account of this._accountsModel.getStartingAccounts()) {
-            if (account.getAccountName() === accountName) {
-                this._accountsModel.removeStartingAccount(account);
-                return;
-            }
-        }
-    }
+    // public removeAccount(accountName: string) {
+    //     for (const account of this._accountsModel.getStartingAccounts()) {
+    //         if (account.getAccountName() === accountName) {
+    //             this._accountsModel.removeStartingAccount(account);
+    //             return;
+    //         }
+    //     }
+    // }
 
-    public containsAccountWithName(accountName: string): boolean {
-        for (const account of this._accountsModel.getStartingAccounts()) {
-            if (account.getAccountName() === accountName) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // public containsAccountWithName(accountName: string): boolean {
+    //     for (const account of this._accountsModel.getStartingAccounts()) {
+    //         if (account.getAccountName() === accountName) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 
-    public getDefaultAccountName(type: AccountType): string {
-        const name = Object.keys({ type })[0];
-        let suffix = 1;
+    // public getDefaultAccountName(type: AccountType): string {
+    //     const name = Object.keys({ type })[0];
+    //     let suffix = 1;
 
-        while (this.containsAccountWithName(name + suffix.toString())) {
-            suffix++;
-        }
-        return (name + suffix.toString());
-    }
-
-    public getAccountsModel(): AccountsModel {
-        return this._accountsModel;
-    }
-
-    public setAccountsModel(model: AccountsModel) {
-        this._accountsModel = model;
-    }
+    //     while (this.containsAccountWithName(name + suffix.toString())) {
+    //         suffix++;
+    //     }
+    //     return (name + suffix.toString());
+    // }
 }

@@ -14,16 +14,19 @@ export const startingAccountsSlice = createSlice({
     name: "startingAccounts",
     initialState,
     reducers: {
-        addAccount: (state, action: PayloadAction<Account>) => {
+        addStartingAccount: (state, action: PayloadAction<Account>) => {
             state.accounts.push(action.payload);
         },
-        removeAccount: (state, action: PayloadAction<string>) => {
+        removeStartingAccount: (state, action: PayloadAction<string>) => {
             state.accounts = state.accounts.filter(account => account.getAccountName() !== action.payload);
+        },
+        clearStartingAccounts: (state) => {
+            state.accounts = [];
         }
     }
 });
 
-export const {addAccount, removeAccount } = startingAccountsSlice.actions;
+export const {addStartingAccount, removeStartingAccount, clearStartingAccounts } = startingAccountsSlice.actions;
 
 export const selectStartingAccounts = (state : RootState) => state.startingAccounts;
 

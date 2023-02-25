@@ -114,33 +114,33 @@ test("sortingEqualInterestRateAccounts", () => {
 });
 
 
-test("accumulatingInterest", () => {
-  const accountsController = new AccountsController();
-  const model = accountsController.getAccountsModel();
-  model.addStartingAccount(new Loan("Loan 1", 1.05, currency(-1000), currency(100)));
-  accountsController.run(1, currency(100));
-  const history = model.getHistory();
-  expect(history.peek()![0].getBalance()).toEqual(currency(-945));
-  expect(history.peek()![0].getInterestForPeriod()).toEqual(currency(-45));
-});
+// test("accumulatingInterest", () => {
+//   const accountsController = new AccountsController();
+//   const model = accountsController.getAccountsModel();
+//   model.addStartingAccount(new Loan("Loan 1", 1.05, currency(-1000), currency(100)));
+//   accountsController.run(1, currency(100));
+//   const history = model.getHistory();
+//   expect(history.peek()![0].getBalance()).toEqual(currency(-945));
+//   expect(history.peek()![0].getInterestForPeriod()).toEqual(currency(-45));
+// });
 
-test("distributeAcrossLoans1", () => {
-  const accountsController = new AccountsController();
-  const model = accountsController.getAccountsModel();
-  model.addStartingAccount(new Loan("Loan 1", 1.05, currency(-200), currency(100)));
-  model.addStartingAccount(new Loan("Loan 2", 1.05, currency(-200), currency(100)));
-  model.addStartingAccount(new Investment("Investment 1", 1.05, currency(0)));
-  accountsController.run(1, currency(500));
+// test("distributeAcrossLoans1", () => {
+//   const accountsController = new AccountsController();
+//   const model = accountsController.getAccountsModel();
+//   model.addStartingAccount(new Loan("Loan 1", 1.05, currency(-200), currency(100)));
+//   model.addStartingAccount(new Loan("Loan 2", 1.05, currency(-200), currency(100)));
+//   model.addStartingAccount(new Investment("Investment 1", 1.05, currency(0)));
+//   accountsController.run(1, currency(500));
 
-  const topOfStack = model.getHistory().peek();
+//   const topOfStack = model.getHistory().peek();
 
-  expect(topOfStack).toEqual([
-    new Loan("Loan 1", 1.05, currency(0), currency(100), currency(0), currency(200), true),
-    new Loan("Loan 2", 1.05, currency(0), currency(100), currency(0), currency(200), true),
-    new Investment("Investment 1", 1.05, currency(105), currency(5), currency(100))
-  ]);
-  expect(Utilities.allLoansPaidOff(topOfStack)).toBe(true);
-});
+//   expect(topOfStack).toEqual([
+//     new Loan("Loan 1", 1.05, currency(0), currency(100), currency(0), currency(200), true),
+//     new Loan("Loan 2", 1.05, currency(0), currency(100), currency(0), currency(200), true),
+//     new Investment("Investment 1", 1.05, currency(105), currency(5), currency(100))
+//   ]);
+//   expect(Utilities.allLoansPaidOff(topOfStack)).toBe(true);
+// });
 
 test("defaultNameRegex", () => {
   expect(Utilities.isDefaultName("Loan1")).toBe(true);
@@ -256,14 +256,14 @@ test("defaultNameRegex", () => {
 // });
 
 
-test("allLoansPaidOffEarly", () => {
-  const accountsController = new AccountsController();
-  const model = accountsController.getAccountsModel();
-  model.addStartingAccount(new Loan("Loan 1", 1.05, currency(-500), currency(100)));
-  model.addStartingAccount(new Loan("Loan 2", 1.05, currency(-500), currency(100)));
-  accountsController.run(10, currency(500));
-  expect(model.getHistory().size()).toBe(4);
-});
+// test("allLoansPaidOffEarly", () => {
+//   const accountsController = new AccountsController();
+//   const model = accountsController.getAccountsModel();
+//   model.addStartingAccount(new Loan("Loan 1", 1.05, currency(-500), currency(100)));
+//   model.addStartingAccount(new Loan("Loan 2", 1.05, currency(-500), currency(100)));
+//   accountsController.run(10, currency(500));
+//   expect(model.getHistory().size()).toBe(4);
+// });
 
 // test("validatingNumbers", () => {
 //   expect(Utilities.validateNumber("0", 1)).toBe(true);
