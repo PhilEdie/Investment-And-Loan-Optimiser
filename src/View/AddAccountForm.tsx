@@ -1,24 +1,23 @@
 import currency from "currency.js";
 import { useState } from "react";
-import { Account } from "../Model/Account";
-import { AccountsModel } from "../Model/AccountsModel";
+import { useDispatch } from "react-redux";
 import { AccountType } from "../Model/AccountType";
 import { Investment } from "../Model/Investment";
 import { Loan } from "../Model/Loan";
 import { FormFieldType } from "./FormFieldType";
 import useInput from "./useInput";
 
-export interface AddAccountFormProps {
-    addAccount: (newAccount: Account) => void;
-}
+import {addAccount} from "../Model/StartingAccountsSlice";
 
-
-const AddAccountForm = ({ addAccount }: AddAccountFormProps) => {
+const AddAccountForm = () => {
     const accountName = useInput(FormFieldType.AccountName, "");
     const minimumAnnualPayment = useInput(FormFieldType.MinimumAnnualPayment, "");
     const balance = useInput(FormFieldType.Balance, "");
     const interestRate = useInput(FormFieldType.InterestRate, "0.00");
     const [accountType, setAccountType] = useState(AccountType.Loan);
+    
+    const dispatch = useDispatch();
+
 
     function clearForm() {
         setAccountType(AccountType.Loan);
@@ -39,7 +38,7 @@ const AddAccountForm = ({ addAccount }: AddAccountFormProps) => {
         }
 
         if (accountType == AccountType.Loan) {
-            addAccount(new Loan(accountName.value, 1 + parseFloat(interestRate.value), currency(-1 * parseFloat(balance.value)), currency(parseFloat(minimumAnnualPayment.value))));
+            dispatch(addAccount(new Loan(accountName.value, 1 + parseFloat(interestRate.value), currency(-1 * parseFloat(balance.value)), currency(parseFloat(minimumAnnualPayment.value)))));
         }
 
         if (accountType == AccountType.Investment) {

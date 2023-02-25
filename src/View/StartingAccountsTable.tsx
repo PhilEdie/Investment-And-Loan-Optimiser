@@ -1,13 +1,13 @@
 import { type } from "os";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Account } from "../Model/Account";
 import { Loan } from "../Model/Loan";
+import { selectStartingAccounts } from "../Model/StartingAccountsSlice";
 
-export interface StartingAccountsTableProps {
-    startingAccounts: Account[];
-}
-
-const StartingAccountsTable = ({ startingAccounts }: StartingAccountsTableProps) => {
-
+const StartingAccountsTable = () => {
+    const startingAccounts = useSelector(selectStartingAccounts);
+    const dispatch = useDispatch();
     return (
         <table>
             <thead>
@@ -21,7 +21,7 @@ const StartingAccountsTable = ({ startingAccounts }: StartingAccountsTableProps)
             </thead>
             <tbody>
 
-                {startingAccounts.map((account) => (
+                {startingAccounts.accounts.map((account) => (
                     <tr key={account.getAccountName()}>
                         <td>
                             {account.getAccountName()}

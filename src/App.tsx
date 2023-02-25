@@ -8,24 +8,19 @@ import ResultsTable from "./View/ResultsTable";
 import currency from "currency.js";
 
 function App() {
-  const [startingAccounts, setStartingAccounts] = useState<Account[]>([]);
 
-  const addAccount = (account: Account) => {
-    setStartingAccounts([...startingAccounts, account]);
-  };
-
-  const run = () => {
-    const accountsController = new AccountsController();
-    accountsController.getAccountsModel().setStartingAccounts(startingAccounts);
-    accountsController.run(10, currency(10000));
-    console.log(accountsController.getAccountsModel().getHistory());
-  }
+  // const run = () => {
+  //   const accountsController = new AccountsController();
+  //   accountsController.getAccountsModel().setStartingAccounts(startingAccounts);
+  //   accountsController.run(10, currency(10000));
+  //   console.log(accountsController.getAccountsModel().getHistory());
+  // }
 
   return (
     <div>
-      <AddAccountForm addAccount={addAccount} />
-      <StartingAccountsTable startingAccounts={startingAccounts} />
-      <button onClick={() => run()}>Start</button>
+      <AddAccountForm/>
+      <StartingAccountsTable/>
+      {/* <button onClick={() => run()}>Start</button> */}
     </div>
   );
 }
