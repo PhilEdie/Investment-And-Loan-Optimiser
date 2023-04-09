@@ -22,11 +22,11 @@ const AddAccountForm = () => {
     function clearForm() {
         dispatch(clearStartingAccounts());
         // Set default values for inputs. 
-        setAccountType(AccountType.Loan);
-        accountName.onChange("");
-        minimumAnnualPayment.onChange("0.00");
-        balance.onChange("0.00");
-        interestRate.onChange("0.000");
+        setAccountType(AccountType.Investment);
+        accountName.onChange("DefaultName");
+        minimumAnnualPayment.onChange("0");
+        balance.onChange("0");
+        interestRate.onChange("0");
     }
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -40,13 +40,17 @@ const AddAccountForm = () => {
         }
 
         if (accountType == AccountType.Loan) {
-            dispatch(addStartingAccount(new Loan(accountName.value, 1 + parseFloat(interestRate.value), currency(-1 * parseFloat(balance.value)), currency(parseFloat(minimumAnnualPayment.value)))));
+            dispatch(addStartingAccount(new Loan(accountName.value, 1 + (parseFloat(interestRate.value) / 100), currency(-1 * parseFloat(balance.value)), currency(parseFloat(minimumAnnualPayment.value)))));
         }
 
         if (accountType == AccountType.Investment) {
-            dispatch(addStartingAccount(new Investment(accountName.value, 1 + parseFloat(interestRate.value), currency(parseFloat(balance.value)))));
+            dispatch(addStartingAccount(new Investment(accountName.value, 1 + (parseFloat(interestRate.value) / 100), currency(parseFloat(balance.value)))));
         }
     }
+
+    // function deleteAccount(){
+    //     const startingAccounts = useSelector(selectStartingAccounts);
+    // }
 
     return (
         <div className="block p-6 rounded-lg shadow-lg bg-white max-w-m">

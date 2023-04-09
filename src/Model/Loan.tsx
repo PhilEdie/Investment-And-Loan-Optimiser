@@ -39,9 +39,9 @@ export class Loan extends Account {
         }
     }
 
-    public getBalance(): currency {
-        return super.getBalance();
-    }
+    // public getBalance(): currency {
+    //     return super.getBalance();
+    // }
 
     public setBalance(newBalance: currency) {
         if (newBalance.value > 0) {

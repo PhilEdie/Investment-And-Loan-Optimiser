@@ -3,7 +3,6 @@ import { Utilities } from "./Utilities";
 import { Loan } from "./Model/Loan";
 import { Investment } from "./Model/Investment";
 import { Account } from "./Model/Account";
-import { AccountsController } from "./Controller/AccountsController";
 
 test("payOffLoanWithPayment", () => {
   const loan = new Loan("Loan 1", 1.05, currency(-500), currency(100));

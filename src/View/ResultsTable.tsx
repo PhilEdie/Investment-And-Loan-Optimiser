@@ -1,22 +1,20 @@
-import { IStack } from "../DataStructures/IStack";
+import { useSelector } from "react-redux";
 import { Account } from "../Model/Account";
+import { selectHistory } from "../Model/HistorySlice";
 import PaymentPeriodTable from "./PaymentPeriodTable";
 
-export interface ResultsTableProps {
-    history: IStack<Account[]>;
-}
+const ResultsTable = () => {
 
-const ResultsTable = ({ history }: ResultsTableProps) => {
+    const history = useSelector(selectHistory);
 
-    let historyArray = history.toArray();
-    historyArray = historyArray.reverse();
-
+    const historyArray = history.history.toArray();
     return (
-    <>
-        {historyArray.map((paymentPeriod: Account[]) => {
+    <div>
+        <h1>------ RESULTS ------</h1>
+        {historyArray.map((paymentPeriod: Account[]) => (
             <PaymentPeriodTable paymentPeriod={paymentPeriod}/>
-        })}
-    </>
+        ))}
+    </div>
     );
 }
 

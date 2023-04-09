@@ -1,13 +1,9 @@
-import { type } from "os";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { Account } from "../Model/Account";
 import { Loan } from "../Model/Loan";
 import { selectStartingAccounts } from "../Model/StartingAccountsSlice";
 
 const StartingAccountsTable = () => {
     const startingAccounts = useSelector(selectStartingAccounts);
-    const dispatch = useDispatch();
     return (
         <table>
             <thead>
@@ -33,7 +29,13 @@ const StartingAccountsTable = () => {
                             {account.getBalance().format()}
                         </td>
                         <td>
-                            {account.getInterestRate()}
+                            {account.getInterestRate()}%
+                        </td>
+                        <td>
+
+                            {
+                            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                            account instanceof Loan ? (account as Loan).getMinimumPayment().toString() : "N/A"}
                         </td>
                     </tr>
                 ))}

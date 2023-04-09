@@ -34,19 +34,19 @@ export class Utilities {
     }
 
     public static getNetWorth(accounts: Account[]): currency {
-        const networth = currency(0);
+        let netWorth = currency(0);
         for (const account of accounts) {
-            networth.add(account.getBalance());
+            netWorth = netWorth.add(account.getBalance());
         }
-        return networth;
+        return netWorth;
     }
 
     public static getTotalInterest(accounts: Account[]): currency {
-        const totalInterest = currency(0);
+        let totalInterest = currency(0);
         for (const account of accounts) {
-            totalInterest.add(account.getInterestForPeriod());
+            totalInterest = totalInterest.add(account.getInterestForPeriod());
         }
-        return totalInterest
+        return totalInterest;
     }
 
     public static getPaidOffLoans(accounts: Account[]): Account[] {

@@ -35,13 +35,13 @@ const PaymentPeriodTable = ({ paymentPeriod }: ResultsIterationTableProps) => {
                             {account.getBalance().format()}
                         </td>
                         <td>
-                            {account.getInterestRate()}
+                            {((account.getInterestRate() - 1) * 100).toFixed(3)}%
                         </td>
                         <td>
-                            {account.getPaymentForPeriod().toString()}
+                            {account.getPaymentForPeriod().format()}
                         </td>
                         <td>
-                            {account.getInterestForPeriod().toString()}
+                            {account.getInterestForPeriod().format()}
                         </td>
                     </tr>
                 ))}
@@ -52,7 +52,7 @@ const PaymentPeriodTable = ({ paymentPeriod }: ResultsIterationTableProps) => {
             <tr>
                 <th>Loans Paid Off</th>
                 <th>Net Worth</th>
-                <th>TotalInterest For Period</th>
+                <th>Total Interest For Period</th>
             </tr>
         </thead>
         <tbody>
@@ -60,10 +60,10 @@ const PaymentPeriodTable = ({ paymentPeriod }: ResultsIterationTableProps) => {
                 {Utilities.getPaidOffLoansAsString(paymentPeriod)}
             </td>
             <td>
-                {Utilities.getNetWorth(paymentPeriod).toString()}
+                {Utilities.getNetWorth(paymentPeriod).format()}
             </td>
             <td>
-                {Utilities.getTotalInterest(paymentPeriod).toString()}
+                {Utilities.getTotalInterest(paymentPeriod).format()}
             </td>
         </tbody>
     </table>
