@@ -13,4 +13,10 @@ export class ValidationRules {
         const regex = /^(100(\.0{1,3})?|\d{1,2}(\.\d{1,3})?|0\.\d{1,3})$/;
         return regex.test(input);
     }
+
+    public static isValidTotalIterations(input: string): boolean { 
+        // A number between 1 and 100. 
+        const regex = /^(100|[1-9][0-9]?|0?[1-9])$/;
+        return regex.test(input);
+    }
 }

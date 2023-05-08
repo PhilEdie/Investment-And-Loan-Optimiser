@@ -50,10 +50,10 @@ function runOptimiserOnce(history: IStack<Account[]>, availableFunds: currency) 
   }
 
   let remainingIncome = availableFunds;
-  const accounts = createCopyOfAccounts(history.peek());
+  let accounts = createCopyOfAccounts(history.peek());
 
   // Sort accounts so high priority accounts will be paid first.
-  accounts.sort((a, b) => a.getPriority() - b.getPriority());
+  accounts = accounts.sort((a, b) => a.compareTo(b));
 
   // Pay minimums into each loan:
   remainingIncome = payMinimumsOnLoans(accounts, remainingIncome);
@@ -125,54 +125,16 @@ function createCopyOfAccounts(toCopy: Account[] | undefined): Account[] {
   const copied: Array<Account> = [];
 
   for (const account of toCopy) {
+    let clonedAccount : Account;
     if (account instanceof Loan) {
-      copied.push(Loan.clone(account));
-    } else if (account instanceof Investment) {
-      copied.push(Investment.clone(account));
+      clonedAccount = Loan.clone(account);
+    } else {
+      clonedAccount = Investment.clone(account);
     }
+    clonedAccount.setPaymentForPeriod(currency(0));
+    clonedAccount.setInterestForPeriod(currency(0));
+    copied.push(clonedAccount);
   }
 
   return copied;
 }
-
-function getTotalMinimumPayments(startingAccounts: Account[]): currency {
-  if (startingAccounts.length === 0) {
-    throw new Error("Error. accountsModel should have at least one account.");
-  }
-
-  const sum = currency(0);
-  for (const account of startingAccounts) {
-    if (account instanceof Loan) {
-      sum.add(account.getMinimumPayment());
-    }
-  }
-  return sum;
-}
-
-// public removeAccount(accountName: string) {
-//     for (const account of this._accountsModel.getStartingAccounts()) {
-//         if (account.getAccountName() === accountName) {
-//             this._accountsModel.removeStartingAccount(account);
-//             return;
-//         }
-//     }
-// }
-
-// public containsAccountWithName(accountName: string): boolean {
-//     for (const account of this._accountsModel.getStartingAccounts()) {
-//         if (account.getAccountName() === accountName) {
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
-// public getDefaultAccountName(type: AccountType): string {
-//     const name = Object.keys({ type })[0];
-//     let suffix = 1;
-
-//     while (this.containsAccountWithName(name + suffix.toString())) {
-//         suffix++;
-//     }
-//     return (name + suffix.toString());
-// }

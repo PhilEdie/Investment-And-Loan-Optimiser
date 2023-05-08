@@ -83,21 +83,21 @@ export abstract class Account {
             return -1;
         } else if (this.getInterestRate() < other.getInterestRate()) {
             return 1;
-        } else {
-            if (this.getPriority() < other.getPriority()) {
-                return -1;
-            } else if (this.getPriority() > other.getPriority()) {
-                return 1;
-            } else {
-                if (this.getAccountName().localeCompare(other.getAccountName()) < 0) {
-                    return -1;
-                } else if (this.getAccountName().localeCompare(other.getAccountName()) > 0) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
         }
+
+        if (this.getPriority() < other.getPriority()) {
+            return -1;
+        } else if (this.getPriority() > other.getPriority()) {
+            return 1;
+        }
+
+        if (this.getAccountName().localeCompare(other.getAccountName()) < 0) {
+            return -1;
+        } else if (this.getAccountName().localeCompare(other.getAccountName()) > 0) {
+            return 1;
+        }
+        
+        return 0;   
     }
 }
 

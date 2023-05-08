@@ -11,7 +11,7 @@ const PaymentPeriodTable = ({ paymentPeriod }: ResultsIterationTableProps) => {
 
     return (
         <>
-        <table>
+        <table className="pure-table pure-table-horizontal">
             <thead>
                 <tr>
                     <th>Account Name</th>
@@ -47,13 +47,11 @@ const PaymentPeriodTable = ({ paymentPeriod }: ResultsIterationTableProps) => {
                 ))}
             </tbody>
         </table>
-        <table>
+        <table className="pure-table pure-table-horizontal">
         <thead>
-            <tr>
-                <th>Loans Paid Off</th>
-                <th>Net Worth</th>
-                <th>Total Interest For Period</th>
-            </tr>
+            <th>Loans Paid Off</th>
+            <th>Net Worth</th>
+            <th>Total Interest For Period</th>
         </thead>
         <tbody>
             <td>

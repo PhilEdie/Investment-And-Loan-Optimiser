@@ -7,22 +7,24 @@ import { selectStartingAccounts } from "./Model/StartingAccountsSlice";
 import { runOptimiser } from "./Controller/AccountsController";
 import currency from "currency.js";
 import { set } from "./Model/HistorySlice";
+import OptimiserSettingsControls from "./View/OptimiserSettingsControls";
+import { selectOptimiserSettings } from "./Model/OptimiserSettingsSlice";
 
 function App() {
 
   const startingAccounts = useSelector(selectStartingAccounts);
+  const optimiserSettings = useSelector(selectOptimiserSettings);
   const dispatch = useDispatch(); 
 
   const run = () => {
     const history = runOptimiser(startingAccounts.accounts, 10, currency(10000));
-    console.log(history);
     dispatch(set(history));
   }
 
   return (
     <div>
       <AddAccountForm/>
-      <button onClick={(e) => run()}>Run</button>
+      <OptimiserSettingsControls/>
       <StartingAccountsTable/>
       <ResultsTable/>
     </div>

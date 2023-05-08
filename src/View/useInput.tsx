@@ -7,8 +7,10 @@ import { ValidationRules } from "./ValidationRules";
 export function useInput(type: FormFieldType, initialValue: string) {
     const _type = type;
     const [value, setValue] = useState<string>(initialValue);
-    const [isValidInput, setIsValidInput] = useState<boolean>(false);
+    const [isValidInput, setIsValidInput] = useState<boolean>(true);
     const [displayValue, setDisplayValue] = useState<string>();
+
+    
 
     const handleChange = (value: string) => {
         let isValid = false;
@@ -24,6 +26,9 @@ export function useInput(type: FormFieldType, initialValue: string) {
                 break;
             case FormFieldType.InterestRate:
                 isValid = ValidationRules.isValidInterestRate(value);
+                break;
+            case FormFieldType.TotalIterations:
+                isValid = ValidationRules.isValidTotalIterations(value);
                 break;
             default:
                 setIsValidInput(false);
@@ -59,7 +64,6 @@ export function useInput(type: FormFieldType, initialValue: string) {
                 setDisplayValue(value);
         }
     }
-
 
     return {
         value,

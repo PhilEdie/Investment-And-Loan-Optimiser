@@ -3,5 +3,7 @@ export const enum FormFieldType {
     AccountType,
     Balance,
     InterestRate,
-    MinimumAnnualPayment
+    MinimumAnnualPayment,
+    Number,
+    TotalIterations
 }

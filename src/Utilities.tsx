@@ -55,6 +55,9 @@ export class Utilities {
 
     public static getPaidOffLoansAsString(accounts: Account[]): string {
         const paidOffLoans : Account[] = this.getPaidOffLoans(accounts);
+        if(paidOffLoans.length == 0){
+            return "N/A";
+        }
         const paidOffLoansStringArray : string[] = paidOffLoans.map((account) => account.getAccountName());
         return paidOffLoansStringArray.join(", ");
     }
