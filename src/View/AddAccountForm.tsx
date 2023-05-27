@@ -1,5 +1,5 @@
 import currency from "currency.js";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AccountType } from "../Model/AccountType";
 import { Investment } from "../Model/Investment";
@@ -9,6 +9,7 @@ import useInput from "./useInput";
 
 import {addStartingAccount, clearStartingAccounts, selectStartingAccounts} from "../Model/StartingAccountsSlice";
 import { useSelector } from "react-redux";
+import { selectOptimiserSettings, setAvailableFunds, setIterations } from "../Model/OptimiserSettingsSlice";
 
 const AddAccountForm = () => {
     const accountName = useInput(FormFieldType.AccountName, "DefaultName");
@@ -18,14 +19,18 @@ const AddAccountForm = () => {
     const [accountType, setAccountType] = useState(AccountType.Investment);
 
     const startingAccounts = useSelector(selectStartingAccounts);
+    const optimiserSettings = useSelector(selectOptimiserSettings);
     const dispatch = useDispatch();
+
+    const minimumAnnualPaymentRef = useRef<HTMLInputElement>(null);
 
 
     function clearForm() {
         dispatch(clearStartingAccounts());
         // Set default values for inputs. 
         setAccountType(AccountType.Investment);
-        accountName.onChange("DefaultName");
+        dispatch(setIterations(1));
+        dispatch(setAvailableFunds(currency(5000)));
         minimumAnnualPayment.onChange("0");
         balance.onChange("0");
         interestRate.onChange("0");
@@ -53,13 +58,40 @@ const AddAccountForm = () => {
         if (accountType == AccountType.Investment) {
             dispatch(addStartingAccount(new Investment(accountName.value, 1 + (parseFloat(interestRate.value) / 100), currency(parseFloat(balance.value)))));
         }
+
+        accountName.onChange(getDefaultAccountName());
+    }
+
+    useEffect(() => {
+        accountName.onChange(getDefaultAccountName());
+    }, [startingAccounts, accountType]);
+
+    useEffect(() => {
+        if(accountType !== AccountType.Loan){
+            minimumAnnualPayment.onChange("0");
+            minimumAnnualPaymentRef.current!.readOnly = true;
+        } else {
+            minimumAnnualPaymentRef.current!.readOnly = false;
+        }
+    }, [accountType]);
+
+    function getDefaultAccountName(){
+        const prefix = AccountType[accountType];
+        let index = 1;
+
+        while(startingAccounts.accounts.filter((account) => account.getAccountName() === (prefix +"-"+ index.toString()))
+            .length > 0){
+            index++;
+        }
+        return prefix + "-" + index.toString();
     }
 
     return (
         <div>
-            <h1>Add Account Form</h1>
+            
             <form className = "pure-form pure-form-aligned" onSubmit={(e) => handleSubmit(e)}>
                 <fieldset>
+                    <legend>Add Accounts</legend>
                     <div className="pure-control-group">
                         <label>Account Name</label>
                         <input type="text" value={accountName.value} onChange={(e) => accountName.onChange(e.target.value)} />
@@ -75,19 +107,11 @@ const AddAccountForm = () => {
                             <option value={AccountType.Loan}>Loan</option>
                         </select>
                     </div>
-                    <div className="pure-control-group">
-                        <label>Minimum Annual Payment</label>
-                        <input type="text" value={minimumAnnualPayment.value} onChange={(e) => minimumAnnualPayment.onChange(e.target.value)} />
-                        <input disabled value={minimumAnnualPayment.displayValue}/>
-                        
-                        {!minimumAnnualPayment.isValidInput &&
-                            <span>Invalid minimum annual payment.</span>
-                        }
-                    </div>
+      
                     <div className="pure-control-group">
                         <label>Balance</label>
                         <input type="text" value={balance.value} onChange={(e) => balance.onChange(e.target.value)} />
-                        <input disabled value={balance.displayValue}/>
+                        <input readOnly value={balance.displayValue}/>
                         {!balance.isValidInput &&
                             <span>Invalid balance.</span>
                         }
@@ -97,15 +121,28 @@ const AddAccountForm = () => {
                             Interest Rate (%)
                         </label>
                         <input type="text" value={interestRate.value} onChange={(e) => interestRate.onChange(e.target.value)} />
-                    <input disabled value={interestRate.displayValue}/>
+                    <input readOnly value={interestRate.displayValue}/>
                         {!interestRate.isValidInput &&
                             <span>Invalid interest rate.</span>
                         }
                     </div>
                     <div className="pure-control-group">
+                        <label>Minimum Annual Payment</label>
+                        <input type="text" 
+                        value={minimumAnnualPayment.value} 
+                        onChange={(e) => minimumAnnualPayment.onChange(e.target.value)} 
+                        ref={minimumAnnualPaymentRef}      
+                        />
+                        <input readOnly value={minimumAnnualPayment.displayValue}/>
+                        
+                        {!minimumAnnualPayment.isValidInput &&
+                            <span>Invalid minimum annual payment.</span>
+                        }
+                    </div>
+                    <div className="pure-controls"> 
                         <button className="pure-button pure-button-primary">Add Account</button>
                     </div>
-                    <div className="pure-control-group">
+                    <div className="pure-controls">     
                         <button className="pure-button pure-button-primary" type="button" onClick={(e) => clearForm()}>Clear</button>
                     </div>
                 </fieldset>

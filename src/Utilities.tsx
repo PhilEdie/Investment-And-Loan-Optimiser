@@ -9,30 +9,6 @@ export class Utilities {
         return regex.test(name);
     }
 
-    public static containsAllLoans(accounts: Account[] | undefined): boolean {
-        if (accounts === undefined) {
-            throw new Error("accounts is undefined.");
-        }
-        for (const account of accounts) {
-            if (!(account instanceof Loan)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static allLoansPaidOff(accounts: Account[] | undefined): boolean {
-        if (accounts === undefined) {
-            throw new Error("accounts is undefined.");
-        }
-        for (const account of accounts) {
-            if (account instanceof Loan && !account.isPaidOff()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static getNetWorth(accounts: Account[]): currency {
         let netWorth = currency(0);
         for (const account of accounts) {
@@ -60,5 +36,15 @@ export class Utilities {
         }
         const paidOffLoansStringArray : string[] = paidOffLoans.map((account) => account.getAccountName());
         return paidOffLoansStringArray.join(", ");
+    }
+
+    public static getTotalMinimumPayments(accounts: Account[]): currency {
+        const sumOfMinimumPayments = currency(0);
+        for(const account of accounts){
+            if(account instanceof Loan){
+                sumOfMinimumPayments.add(account.getMinimumPayment());
+            }
+        }
+        return sumOfMinimumPayments;
     }
 }

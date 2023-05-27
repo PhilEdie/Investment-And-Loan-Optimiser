@@ -10,8 +10,6 @@ export function useInput(type: FormFieldType, initialValue: string) {
     const [isValidInput, setIsValidInput] = useState<boolean>(true);
     const [displayValue, setDisplayValue] = useState<string>();
 
-    
-
     const handleChange = (value: string) => {
         let isValid = false;
         switch (_type) {
@@ -43,7 +41,6 @@ export function useInput(type: FormFieldType, initialValue: string) {
             handleDisplayValueChange("");
         }
     }
-
 
     const handleDisplayValueChange = (value : string) => {
         if(value.length === 0){

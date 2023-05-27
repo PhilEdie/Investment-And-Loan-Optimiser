@@ -5,7 +5,7 @@ export class ValidationRules {
     }
 
     public static isValidName(input: string): boolean {
-        const regex = /^[a-zA-Z0-9]{1,24}$/;
+        const regex = /^(?!\s)[a-zA-Z0-9-]+(?:\s[a-zA-Z0-9-]+)*$/;
         return regex.test(input);
     }
 

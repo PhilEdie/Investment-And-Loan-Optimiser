@@ -2,17 +2,14 @@ import currency from "currency.js";
 import { Account } from "../Model/Account";
 import { Investment } from "../Model/Investment";
 import { Loan } from "../Model/Loan";
-import { Utilities } from "../Utilities";
 import { IStack } from "../DataStructures/IStack";
 import { Stack } from "../DataStructures/Stack";
-import { useDispatch } from "react-redux";
-import { set } from "../Model/HistorySlice";
 
 export function runOptimiser(
   startingAccounts: Account[],
   totalIterations: number,
   availableFunds: currency
-) : IStack<Account[]> {
+): IStack<Account[]> {
   const history: IStack<Account[]> = new Stack<Account[]>();
 
   if (totalIterations <= 0) {
@@ -30,10 +27,7 @@ export function runOptimiser(
 
   for (let i = 0; i < totalIterations; i++) {
     // Stop if all accounts are loans and paid off.
-    if (
-      Utilities.containsAllLoans(history.peek()) &&
-      Utilities.allLoansPaidOff(history.peek())
-    ) {
+    if (containsAllLoans(history.peek()) && allLoansPaidOff(history.peek())) {
       break;
     }
     runOptimiserOnce(history, availableFunds);
@@ -41,7 +35,10 @@ export function runOptimiser(
   return history;
 }
 
-function runOptimiserOnce(history: IStack<Account[]>, availableFunds: currency) {
+function runOptimiserOnce(
+  history: IStack<Account[]>,
+  availableFunds: currency
+) {
   if (availableFunds.value <= 0) {
     throw new Error("Error. availableFunds should be greater than 0.");
   }
@@ -68,10 +65,7 @@ function runOptimiserOnce(history: IStack<Account[]>, availableFunds: currency) 
       }
       remainingIncome = account.makePayment(remainingIncome);
     }
-    if (
-      Utilities.containsAllLoans(accounts) &&
-      Utilities.allLoansPaidOff(accounts)
-    ) {
+    if (containsAllLoans(accounts) && allLoansPaidOff(accounts)) {
       break;
     }
   }
@@ -125,7 +119,7 @@ function createCopyOfAccounts(toCopy: Account[] | undefined): Account[] {
   const copied: Array<Account> = [];
 
   for (const account of toCopy) {
-    let clonedAccount : Account;
+    let clonedAccount: Account;
     if (account instanceof Loan) {
       clonedAccount = Loan.clone(account);
     } else {
@@ -137,4 +131,28 @@ function createCopyOfAccounts(toCopy: Account[] | undefined): Account[] {
   }
 
   return copied;
+}
+
+function containsAllLoans(accounts: Account[] | undefined): boolean {
+  if (accounts === undefined) {
+    throw new Error("accounts is undefined.");
+  }
+  for (const account of accounts) {
+    if (!(account instanceof Loan)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function allLoansPaidOff(accounts: Account[] | undefined): boolean {
+  if (accounts === undefined) {
+    throw new Error("accounts is undefined.");
+  }
+  for (const account of accounts) {
+    if (account instanceof Loan && !account.isPaidOff()) {
+      return false;
+    }
+  }
+  return true;
 }

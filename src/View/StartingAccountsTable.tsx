@@ -8,8 +8,8 @@ const StartingAccountsTable = () => {
     const dispatch = useDispatch();
     return (
         <>
-        <h2>Starting Accounts</h2>
-        <table className="pure-table pure-table-horizontal">
+        <h3>Starting Accounts</h3>
+        <table className="pure-table pure-table-horizontal" style={{width : "100%"}}>
             <thead>
                 <tr>
                     <th>Account Name</th>
@@ -30,10 +30,10 @@ const StartingAccountsTable = () => {
                         <td>
                             {account instanceof Loan ? "Loan" : "Investment" }
                         </td>
-                        <td>
+                        <td style={{textAlign: "right"}}>
                             {account.getBalance().format()}
                         </td>
-                        <td>
+                        <td style={{textAlign: "right"}}>
                         {((account.getInterestRate() - 1) * 100).toFixed(3)}%
                         </td>
                         <td>
@@ -43,7 +43,7 @@ const StartingAccountsTable = () => {
                             account instanceof Loan ? (account as Loan).getMinimumPayment().toString() : "N/A"}
                         </td>
                         <td>
-                            <button onClick={() => dispatch(removeStartingAccount(account.getAccountName()))}>Remove</button>
+                            <button className="pure-button pure-button-primary" type="button" onClick={() => dispatch(removeStartingAccount(account.getAccountName()))}>Remove</button>
                         </td>
                     </tr>
                 ))}
@@ -55,5 +55,6 @@ const StartingAccountsTable = () => {
         </>
     );
 };
+
 
 export default StartingAccountsTable;
