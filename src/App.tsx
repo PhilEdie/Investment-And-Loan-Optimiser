@@ -15,39 +15,26 @@ function App() {
   return (
     <>
       <div className="pure-g">
-        <div className="pure-u-xl-1-3" />
-        <div className="pure-u-lg-1-3">
+        {/* <div className="pure-u-1-4" /> */}
+        <span>
           <AddAccountForm />
-        </div>
-        <div className="pure-u-xl-1-3" />
+          </span>
       </div>
       <div className="pure-g">
-        <div className="pure-u-xl-1-3" />
-        <div className="pure-u-xl-1-3">
+      <div className="pure-u-1-3" />
           <OptimiserSettingsControls />
-        </div>
-        <div className="pure-u-xl-1-3" />
       </div>
       <div className="pure-g">
-        <div className="pure-u-xl-1-3" />
-        <div className="pure-u-xl-1-3">
+        <div className="pure-u-1-3" />
           <StartingAccountsTable />
-        </div>
-        <div className="pure-u-xl-1-3" />
       </div>
       <div className="pure-g">
-        <div className="pure-u-xl-1-5" />
-        <div className="pure-u-xl-3-5">
+      <div className="pure-u-1-3"/>
           <LineChart />
         </div>
-        <div className="pure-u-xl-1-5" />
-      </div>
       <div className="pure-g">
-        <div className="pure-u-xl-1-5" />
-        <div className="pure-u-xl-3-5">
+      <div className="pure-u-1-3" />
           <ResultsTable />
-        </div>
-        <div className="pure-u-xl-1-5" />
       </div>
     </>
   );

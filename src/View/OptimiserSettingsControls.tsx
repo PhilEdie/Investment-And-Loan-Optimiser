@@ -25,7 +25,7 @@ const OptimiserSettingsControls = () => {
             alert("Please add starting accounts.");
             return;
         }
-        if(currency(availableFunds.value) < Utilities.getTotalMinimumPayments(startingAccounts.accounts)){
+        if(currency(availableFunds.value).intValue < Utilities.getTotalMinimumPayments(startingAccounts.accounts).intValue){
             alert("Available funds is less than the sum of all minimum payments.");
             return;
         }

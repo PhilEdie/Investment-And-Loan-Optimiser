@@ -15,7 +15,7 @@ const LineChart = () => {
   useEffect(() => {
     const resizeGraph = () => {
       const parentWidth = svgRef.current?.parentElement?.getBoundingClientRect();
-      if (parentWidth && parentWidth.width !== 0) {
+      if (parentWidth) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         setWidth(parentWidth.width);
         d3.select(svgRef.current).attr("width", parentWidth.width);
@@ -31,7 +31,7 @@ const LineChart = () => {
     return () => {
       window.removeEventListener("resize", resizeGraph); // Clean up the listener on unmount
     };
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     createGraph();
@@ -134,7 +134,7 @@ const LineChart = () => {
     svg
       .append("path")
       .attr("fill", "none")
-      .attr("stroke", "steelblue")
+      .attr("stroke", "green")
       .attr("stroke-width", "0.2em")
       .attr("d", line(dataPoints));
       

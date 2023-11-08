@@ -52,7 +52,12 @@ const AddAccountForm = () => {
         }
 
         if (accountType == AccountType.Loan) {
-            dispatch(addStartingAccount(new Loan(accountName.value, 1 + (parseFloat(interestRate.value) / 100), currency(-1 * parseFloat(balance.value)), currency(parseFloat(minimumAnnualPayment.value)))));
+            // Ensure loan has a balance.
+            if(parseFloat(balance.value) == 0){
+                alert("A loan should have a balance.");
+                return;
+            }
+            dispatch(addStartingAccount(new Loan(accountName.value.trim(), 1 + (parseFloat(interestRate.value) / 100), currency(-1 * parseFloat(balance.value)), currency(parseFloat(minimumAnnualPayment.value)))));
         }
 
         if (accountType == AccountType.Investment) {
@@ -89,7 +94,7 @@ const AddAccountForm = () => {
     return (
         <div>
             
-            <form className = "pure-form pure-form-aligned" onSubmit={(e) => handleSubmit(e)}>
+            <form className ="pure-form pure-form-aligned" onSubmit={(e) => handleSubmit(e)}>
                 <fieldset>
                     <legend>Add Accounts</legend>
                     <div className="pure-control-group">
@@ -109,17 +114,15 @@ const AddAccountForm = () => {
                     </div>
       
                     <div className="pure-control-group">
-                        <label>Balance</label>
+                        <label>Balance</label>           
                         <input type="text" value={balance.value} onChange={(e) => balance.onChange(e.target.value)} />
                         <input readOnly value={balance.displayValue}/>
-                        {!balance.isValidInput &&
-                            <span>Invalid balance.</span>
-                        }
+                            {!balance.isValidInput &&
+                                <span>Invalid balance.</span>
+                            }
                     </div>
                     <div className="pure-control-group">
-                        <label>
-                            Interest Rate (%)
-                        </label>
+                        <label>Interest Rate (%)</label>
                         <input type="text" value={interestRate.value} onChange={(e) => interestRate.onChange(e.target.value)} />
                     <input readOnly value={interestRate.displayValue}/>
                         {!interestRate.isValidInput &&

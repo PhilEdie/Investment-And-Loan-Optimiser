@@ -11,7 +11,7 @@ const ResultsTable = () => {
     return (
     <>
         {historyArray.length != 0 && 
-            <h3>Results</h3>
+            <><h3>Results</h3><br /></>
         }
         
         {historyArray.slice(1).map((paymentPeriod: Account[], index: number) => (

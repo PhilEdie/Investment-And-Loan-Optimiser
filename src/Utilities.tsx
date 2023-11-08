@@ -39,10 +39,11 @@ export class Utilities {
     }
 
     public static getTotalMinimumPayments(accounts: Account[]): currency {
-        const sumOfMinimumPayments = currency(0);
+        // eslint-disable-next-line prefer-const
+        let sumOfMinimumPayments = currency(0);
         for(const account of accounts){
             if(account instanceof Loan){
-                sumOfMinimumPayments.add(account.getMinimumPayment());
+                sumOfMinimumPayments = sumOfMinimumPayments.add(account.getMinimumPayment());
             }
         }
         return sumOfMinimumPayments;
