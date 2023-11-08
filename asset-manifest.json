@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Investment-And-Loan-Optimiser/static/css/main.1a242500.css",
-    "main.js": "/Investment-And-Loan-Optimiser/static/js/main.56b9cdd9.js",
+    "main.css": "/Investment-And-Loan-Optimiser/static/css/main.1f1d174a.css",
+    "main.js": "/Investment-And-Loan-Optimiser/static/js/main.3c5e6352.js",
     "index.html": "/Investment-And-Loan-Optimiser/index.html",
-    "main.1a242500.css.map": "/Investment-And-Loan-Optimiser/static/css/main.1a242500.css.map",
-    "main.56b9cdd9.js.map": "/Investment-And-Loan-Optimiser/static/js/main.56b9cdd9.js.map"
+    "main.1f1d174a.css.map": "/Investment-And-Loan-Optimiser/static/css/main.1f1d174a.css.map",
+    "main.3c5e6352.js.map": "/Investment-And-Loan-Optimiser/static/js/main.3c5e6352.js.map"
   },
   "entrypoints": [
-    "static/css/main.1a242500.css",
-    "static/js/main.56b9cdd9.js"
+    "static/css/main.1f1d174a.css",
+    "static/js/main.3c5e6352.js"
   ]
 }
