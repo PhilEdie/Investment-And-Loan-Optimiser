@@ -23,17 +23,25 @@ const AddAccountForm = () => {
     const dispatch = useDispatch();
 
     const minimumAnnualPaymentRef = useRef<HTMLInputElement>(null);
-
-
-    function clearForm() {
-        dispatch(clearStartingAccounts());
-        // Set default values for inputs. 
+    
+    useEffect(() => {
         setAccountType(AccountType.Investment);
-        dispatch(setIterations(1));
-        dispatch(setAvailableFunds(currency(5000)));
+        clearForm();
+    }, []);
+
+
+    function clearFormInputs(){
         minimumAnnualPayment.onChange("0");
         balance.onChange("0");
         interestRate.onChange("0");
+    }
+
+    function clearForm() {
+        dispatch(clearStartingAccounts());
+        clearFormInputs();
+        // Set default values for inputs. 
+        dispatch(setIterations(1));
+        dispatch(setAvailableFunds(currency(5000)));
     }
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -42,7 +50,7 @@ const AddAccountForm = () => {
             && minimumAnnualPayment.isValidInput
             && balance.isValidInput
             && interestRate.isValidInput)) {
-            alert("Please enter valid stuff.");
+            alert("Please enter valid account details.");
             return;
         }
 
@@ -65,6 +73,7 @@ const AddAccountForm = () => {
         }
 
         accountName.onChange(getDefaultAccountName());
+        clearFormInputs();
     }
 
     useEffect(() => {
@@ -93,7 +102,6 @@ const AddAccountForm = () => {
 
     return (
         <div>
-            
             <form className ="pure-form pure-form-aligned" onSubmit={(e) => handleSubmit(e)}>
                 <fieldset>
                     <legend>Add Accounts</legend>

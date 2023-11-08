@@ -1,5 +1,5 @@
 import currency from "currency.js";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { FormFieldType } from "./FormFieldType";
 import { ValidationRules } from "./ValidationRules";
 
@@ -16,14 +16,14 @@ export function useInput(type: FormFieldType, initialValue: string) {
             case FormFieldType.AccountName:
                 isValid = ValidationRules.isValidName(value);
                 break;
-            case (FormFieldType.Balance):
-                isValid = ValidationRules.isValidCurrency(value);
+            case FormFieldType.Balance:
+                isValid = ValidationRules.isValidCurrency(value) && parseFloat(value) > 0;
                 break;
-            case (FormFieldType.MinimumAnnualPayment):
+            case FormFieldType.MinimumAnnualPayment:
                 isValid = ValidationRules.isValidCurrency(value);
                 break;
             case FormFieldType.InterestRate:
-                isValid = ValidationRules.isValidInterestRate(value);
+                isValid = ValidationRules.isValidInterestRate(value) && parseFloat(value) > 0;
                 break;
             case FormFieldType.TotalIterations:
                 isValid = ValidationRules.isValidTotalIterations(value);

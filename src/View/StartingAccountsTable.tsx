@@ -50,7 +50,7 @@ const StartingAccountsTable = () => {
             </tbody>
         </table>
         {startingAccounts.accounts.length == 0 &&
-        <p>No starting accounts..</p>
+        <p>No Starting Accounts.</p>
         }
         </>
     );

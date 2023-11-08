@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { useSelector } from "react-redux";
 import { selectHistory } from "../Model/HistorySlice";
 import * as d3 from "d3";
@@ -16,11 +15,8 @@ const LineChart = () => {
     const resizeGraph = () => {
       const parentWidth = svgRef.current?.parentElement?.getBoundingClientRect();
       if (parentWidth) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         setWidth(parentWidth.width);
         d3.select(svgRef.current).attr("width", parentWidth.width);
-        // Update the graph based on the new width
-        // e.g., adjust scales, axes, redraw elements, etc.
       }
     };
 
@@ -42,7 +38,6 @@ const LineChart = () => {
     svg.selectAll("*").remove();
 
     // Declare the chart dimensions and margins.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-non-null-assertion
     const height = 500;
     const marginTop = 80;
     const marginRight = 30;
@@ -128,7 +123,6 @@ const LineChart = () => {
     const line = d3
       .line<DataPoint>()
       .x((d) => xScale(d._year))
-      // .y0(height)
       .y((d) => yScale(d._netWorth));
 
     svg
@@ -137,11 +131,7 @@ const LineChart = () => {
       .attr("stroke", "green")
       .attr("stroke-width", "0.2em")
       .attr("d", line(dataPoints));
-      
   }
-
-
-    
 
   if (history.history.size() == 0) {
     return null;

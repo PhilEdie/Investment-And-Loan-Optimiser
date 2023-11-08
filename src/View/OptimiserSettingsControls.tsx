@@ -9,7 +9,6 @@ import { set } from "../Model/HistorySlice";
 import { Utilities } from "../Utilities";
 
 const OptimiserSettingsControls = () => {
-    const optimiserSettings = useSelector(selectOptimiserSettings);
     const startingAccounts = useSelector(selectStartingAccounts);
     const dispatch = useDispatch();
 
