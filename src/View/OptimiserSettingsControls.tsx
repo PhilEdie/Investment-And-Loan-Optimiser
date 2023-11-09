@@ -33,29 +33,33 @@ const OptimiserSettingsControls = () => {
     }
   
     return (
-    <form className="pure-form pure-form-aligned" style={{width : "100%"}}>
-        <fieldset>
-        <legend>Settings</legend>
-        <div className="pure-control-group">
-                        <label>Total Years</label>
-                        <input type="number" value={totalIterations.value} onChange={(e) => totalIterations.onChange(e.target.value)} />
-                        {!totalIterations.isValidInput &&
-                            <span>Invalid total years.</span>
-                        }
-                    </div>
-  
-        <div className="pure-control-group">
-                        <label>Available Funds</label>
-                        <input type="text" value={availableFunds.value} onChange={(e) => availableFunds.onChange(e.target.value)} />
-                        <input readOnly value={availableFunds.displayValue}/>
-                        {!availableFunds.isValidInput &&
-                            <span>Invalid Available Funds.</span>
-                        }
+    <form>
+
+        <div className="row mb-3">
+            <div className="col-md-6">
+                <label className="form-label">Total Years</label>
+                <input className="form-control" type="number" value={totalIterations.value} onChange={(e) => totalIterations.onChange(e.target.value)} />
+                {!totalIterations.isValidInput &&
+                <span>Invalid total years.</span>
+                }
+            </div>
         </div>
-        <div className="pure-controls"> 
-            <button type="button" className="pure-button pure-button-primary" onClick={(e) => run()}>Run</button>
+        <div className="row mb-3">
+        <label className="form-label">Available Funds</label>
+            <div className="col-md-6">
+                
+                <input className="form-control" type="text" value={availableFunds.value} onChange={(e) => availableFunds.onChange(e.target.value)} />
+            </div>
+            <div className="col-md-6">
+                <input className="form-control" disabled value={availableFunds.displayValue}/>
+                {!availableFunds.isValidInput &&
+                <span>Invalid Available Funds.</span>
+                }
+            </div>
         </div>
-        </fieldset>
+        <div className="mb-3"> 
+            <button className="btn btn-primary" type="button" onClick={(e) => run()}>Run</button>
+        </div>
     </form>
     );
 }

@@ -8,22 +8,24 @@ export interface ResultsIterationTableProps {
 
 const PaymentPeriodTable = ({ paymentPeriod }: ResultsIterationTableProps) => {
   return (
+    <div className="table-responsive">
     <table
-      className="pure-table pure-table-horizontal"
+      className="table table-bordered"
       style={{ width: "100%" }}
     >
       <thead>
         <tr>
-          <th>Account Name</th>
-          <th>Account Type</th>
-          <th>Interest Rate</th>
-          <th>Payments Made</th>
-          <th>Balance</th>
-          <th>Interest For Period</th>
+          <th scope="col">Account Name</th>
+          <th scope="col">Account Type</th>
+          <th scope="col">Interest Rate</th>
+          <th scope="col">Payments Made</th>
+          <th scope="col">Balance</th>
+          <th scope="col">Interest For Period</th>
         </tr>
       </thead>
       <tbody>
         {paymentPeriod.map((account) => (
+          
           <tr key={account.getAccountName()}>
             <td>{account.getAccountName()}</td>
             <td>{account instanceof Loan ? "Loan" : "Investment"}</td>
@@ -57,6 +59,7 @@ const PaymentPeriodTable = ({ paymentPeriod }: ResultsIterationTableProps) => {
         </tr>
       </tfoot>
     </table>
+    </div>
   );
 };
 

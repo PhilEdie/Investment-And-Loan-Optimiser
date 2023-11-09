@@ -1,6 +1,5 @@
-.chart-text {
-    /* font-family: "Arial", sans-serif; */
-    font-size: 14px;
-    font-weight: bold;
-    line-height: 1.2;
-  }
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+body {
+  font-family: 'Roboto', sans-serif !important;
+}

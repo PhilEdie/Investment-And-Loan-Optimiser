@@ -7,17 +7,15 @@ import LineChart from "./View/LineChart";
 
 function App() {
   return (
-    <>
+    <div className="container">
     
-    <h1 className="App-header">Investment And Loan Optimiser</h1>
-    <div className="pure-g">
+      <h1 className="container mt-3">Investment And Loan Optimiser</h1>
         <AddAccountForm />
         <OptimiserSettingsControls />
         <StartingAccountsTable />
         <LineChart />
         <ResultsTable />
     </div>
-    </>
   );
 }
 

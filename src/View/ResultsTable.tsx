@@ -9,9 +9,9 @@ const ResultsTable = () => {
     const historyArray = history.history.toArray();
 
     return (
-    <>
+    <div>
         {historyArray.length != 0 && 
-            <><h3>Results</h3><br /></>
+            <h2>Results</h2>
         }
         
         {historyArray.slice(1).map((paymentPeriod: Account[], index: number) => (
@@ -20,7 +20,7 @@ const ResultsTable = () => {
             <PaymentPeriodTable paymentPeriod={paymentPeriod}/>
             </>
         ))}
-    </>
+    </div>
     );
 }
 

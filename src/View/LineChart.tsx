@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { useSelector } from "react-redux";
 import { selectHistory } from "../Model/HistorySlice";
 import * as d3 from "d3";
@@ -138,7 +139,7 @@ const LineChart = () => {
   }
 
   return (
-    <div style={{ width: "100%" }}>
+    <div>
       <svg ref={svgRef} />
     </div>
   );

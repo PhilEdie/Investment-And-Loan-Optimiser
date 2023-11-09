@@ -6,10 +6,16 @@ import { useDispatch } from "react-redux";
 const StartingAccountsTable = () => {
     const startingAccounts = useSelector(selectStartingAccounts);
     const dispatch = useDispatch();
+
+    if(startingAccounts.accounts.length == 0)
+    {
+        return(<></>);
+    }
+
     return (
-        <>
+        <div className="table-responsive">
         <h3>Starting Accounts</h3>
-        <table className="pure-table pure-table-horizontal" style={{width : "100%"}}>
+        <table style={{width : "100%"}} className="table table-bordered">
             <thead>
                 <tr>
                     <th>Account Name</th>
@@ -21,7 +27,6 @@ const StartingAccountsTable = () => {
                 </tr>
             </thead>
             <tbody>
-
                 {startingAccounts.accounts.map((account) => (
                     <tr key={account.getAccountName()}>
                         <td>
@@ -43,16 +48,14 @@ const StartingAccountsTable = () => {
                             account instanceof Loan ? (account as Loan).getMinimumPayment().toString() : "N/A"}
                         </td>
                         <td>
-                            <button className="pure-button pure-button-primary" type="button" onClick={() => dispatch(removeStartingAccount(account.getAccountName()))}>Remove</button>
+                            <button className="btn btn-danger" type="button" onClick={() => dispatch(removeStartingAccount(account.getAccountName()))}>Remove</button>
                         </td>
                     </tr>
                 ))}
             </tbody>
         </table>
-        {startingAccounts.accounts.length == 0 &&
-        <p>No Starting Accounts.</p>
-        }
-        </>
+        </div>
+
     );
 };
 

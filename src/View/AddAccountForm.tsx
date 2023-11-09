@@ -47,7 +47,7 @@ const AddAccountForm = () => {
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!(accountName.isValidInput
-            && minimumAnnualPayment.isValidInput
+            && (accountType == AccountType.Investment || minimumAnnualPayment.isValidInput)
             && balance.isValidInput
             && interestRate.isValidInput)) {
             alert("Please enter valid account details.");
@@ -66,9 +66,7 @@ const AddAccountForm = () => {
                 return;
             }
             dispatch(addStartingAccount(new Loan(accountName.value.trim(), 1 + (parseFloat(interestRate.value) / 100), currency(-1 * parseFloat(balance.value)), currency(parseFloat(minimumAnnualPayment.value)))));
-        }
-
-        if (accountType == AccountType.Investment) {
+        } else {
             dispatch(addStartingAccount(new Investment(accountName.value, 1 + (parseFloat(interestRate.value) / 100), currency(parseFloat(balance.value)))));
         }
 
@@ -80,14 +78,6 @@ const AddAccountForm = () => {
         accountName.onChange(getDefaultAccountName());
     }, [startingAccounts, accountType]);
 
-    useEffect(() => {
-        if(accountType !== AccountType.Loan){
-            minimumAnnualPayment.onChange("0");
-            minimumAnnualPaymentRef.current!.readOnly = true;
-        } else {
-            minimumAnnualPaymentRef.current!.readOnly = false;
-        }
-    }, [accountType]);
 
     function getDefaultAccountName(){
         const prefix = AccountType[accountType];
@@ -101,62 +91,88 @@ const AddAccountForm = () => {
     }
 
     return (
-        <div>
-            <form className ="pure-form pure-form-aligned" onSubmit={(e) => handleSubmit(e)}>
-                <fieldset>
-                    <legend>Add Accounts</legend>
-                    <div className="pure-control-group">
-                        <label>Account Name</label>
-                        <input type="text" value={accountName.value} onChange={(e) => accountName.onChange(e.target.value)} />
-                        {!accountName.isValidInput &&
-                            <span>Invalid account name.</span>
+        <div className="container">
+            <form onSubmit={(e) => handleSubmit(e)}>
+                <div className="row mb-3">
+                    <label className="form-label">Account Name</label>
+                    <input className="form-control" type="text" value={accountName.value} onChange={(e) => accountName.onChange(e.target.value)} />
+                    {!accountName.isValidInput &&
+                        <span>Invalid account name.</span>
+                    }
+                </div>
+                <div className="row mb-3">
+                    <label className="form-label">Account Type</label>
+                    <select className="form-select"
+                        value={accountType} onChange={(e) => setAccountType(parseInt(e.target.value))}>
+                        <option value={AccountType.Investment}>Investment</option>
+                        <option value={AccountType.Loan}>Loan</option>
+                    </select>
+                </div>
+    
+                <div className="row mb-3">
+                    <label className="form-label">Balance</label> 
+                    <div className="col-md-6">     
+                        <input className="form-control" 
+                        type="text" 
+                        value={balance.value} 
+                        onChange={(e) => balance.onChange(e.target.value)} 
+                        />
+                    </div>
+                    <div className="col-md-6">
+                    
+                    <input className="form-control" 
+                    disabled 
+                    value={balance.displayValue}
+                    />
+                        {!balance.isValidInput &&
+                            <span>Invalid balance.</span>
                         }
                     </div>
-                    <div className="pure-control-group">
-                        <label>Account Type</label>
-                        <select
-                            value={accountType} onChange={(e) => setAccountType(parseInt(e.target.value))}>
-                            <option value={AccountType.Investment}>Investment</option>
-                            <option value={AccountType.Loan}>Loan</option>
-                        </select>
+                </div>
+
+                <div className="row mb-3">
+                    <label className="form-label">Interest Rate (%)</label>
+                    <div className="col-md-6">
+                        <input className="form-control" 
+                        type="text" 
+                        value={interestRate.value} 
+                        onChange={(e) => interestRate.onChange(e.target.value)} />
                     </div>
-      
-                    <div className="pure-control-group">
-                        <label>Balance</label>           
-                        <input type="text" value={balance.value} onChange={(e) => balance.onChange(e.target.value)} />
-                        <input readOnly value={balance.displayValue}/>
-                            {!balance.isValidInput &&
-                                <span>Invalid balance.</span>
-                            }
-                    </div>
-                    <div className="pure-control-group">
-                        <label>Interest Rate (%)</label>
-                        <input type="text" value={interestRate.value} onChange={(e) => interestRate.onChange(e.target.value)} />
-                    <input readOnly value={interestRate.displayValue}/>
+                    <div className="col-md-6">
+                        <input className="form-control" 
+                        disabled 
+                        value={interestRate.displayValue}/>
                         {!interestRate.isValidInput &&
                             <span>Invalid interest rate.</span>
                         }
                     </div>
-                    <div className="pure-control-group">
-                        <label>Minimum Annual Payment</label>
-                        <input type="text" 
+                </div>
+                {accountType == AccountType.Loan &&
+                <div className="row mb-3">
+                    <label className="form-label">Minimum Annual Payment</label>
+                    <div className="col-md-6">
+                        <input className="form-control" 
+                        type="text" 
                         value={minimumAnnualPayment.value} 
                         onChange={(e) => minimumAnnualPayment.onChange(e.target.value)} 
-                        ref={minimumAnnualPaymentRef}      
-                        />
-                        <input readOnly value={minimumAnnualPayment.displayValue}/>
-                        
-                        {!minimumAnnualPayment.isValidInput &&
-                            <span>Invalid minimum annual payment.</span>
-                        }
+                        ref={minimumAnnualPaymentRef}/>
                     </div>
-                    <div className="pure-controls"> 
-                        <button className="pure-button pure-button-primary">Add Account</button>
+                    <div className="col-md-6">
+                    <input className="form-control" disabled value={minimumAnnualPayment.displayValue}/>
+                    
+                    {!minimumAnnualPayment.isValidInput &&
+                        <span>Invalid minimum annual payment.</span>
+                    }
                     </div>
-                    <div className="pure-controls">     
-                        <button className="pure-button pure-button-primary" type="button" onClick={(e) => clearForm()}>Clear</button>
-                    </div>
-                </fieldset>
+                </div>
+                }
+                <div className="col mb-3">
+
+                    <button className="btn btn-primary">Add Account</button>
+                </div>
+                <div className="col mb-3"> 
+                    <button className="btn btn-primary" type="button" onClick={(e) => clearForm()}>Clear</button>
+                </div>
             </form>
         </div>
     );
