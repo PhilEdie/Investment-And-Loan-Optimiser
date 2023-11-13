@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import startingAccountsReducer from "./StartingAccountsSlice";
 import historyReducer from "./HistorySlice";
-import optimiserSettingsReducer from "./OptimiserSettingsSlice";
+import optimiserSettingsReducer from "./AddAccountFormSlice";
 
 const store = configureStore({
     reducer: {
         startingAccounts: startingAccountsReducer,
         accountHistory: historyReducer,
-        optimiserSettings: optimiserSettingsReducer
+        addAccountForm: optimiserSettingsReducer
     }
 })
 

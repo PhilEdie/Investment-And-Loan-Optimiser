@@ -10,7 +10,7 @@ export class ValidationRules {
     }
 
     public static isValidInterestRate(input: string): boolean {        
-        const regex = /^(30(\.0{1,3})?|([12]?[0-9]|0?[1-9])(\.\d{1,3})?|0\.\d{1,3})$/;
+        const regex = /^(100(\.0{1,3})?|([12]?[0-9]|0?[1-9])(\.\d{1,3})?|0\.\d{1,3})$/;
         return regex.test(input);
     }
 
