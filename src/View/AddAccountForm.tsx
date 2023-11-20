@@ -2,10 +2,6 @@ import currency from "currency.js";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AccountType } from "../Model/AccountType";
-import { Investment } from "../Model/Investment";
-import { Loan } from "../Model/Loan";
-import { FormFieldType } from "./FormFieldType";
-import useInput from "./useInput";
 
 import {addStartingAccount, clearStartingAccounts, selectStartingAccounts} from "../Model/StartingAccountsSlice";
 import { useSelector } from "react-redux";
@@ -16,6 +12,9 @@ import IntegerInput from "./IntegerInput";
 import { runOptimiser } from "../Controller/AccountsController";
 import { set } from "../Model/HistorySlice";
 import { selectAddAccountForm, setAccountName, setAccountType, setAvailableFunds, setBalance, setInterestRate, setMinimumAnnualPayment, setTotalYears } from "../Model/AddAccountFormSlice";
+import { Account } from "../Model/Account";
+import { Loan } from "../Model/Loan";
+import { Investment } from "../Model/Investment";
 
 const AddAccountForm = () => {
 
@@ -38,7 +37,13 @@ const AddAccountForm = () => {
     }
 
     function handleAddAccount() {
-        return;
+        var newAccount;
+        if(addAccountForm.accountType == AccountType.Loan){
+            newAccount = new Loan(addAccountForm.accountName!, 1 + (addAccountForm.interestRate! / 100), addAccountForm.balance!.multiply(-1), addAccountForm.minimumAnnualPayment!);
+        } else {
+        newAccount = new Investment(addAccountForm.accountName!, 1 + (addAccountForm.interestRate! / 100), addAccountForm.balance!);
+        }
+        dispatch(addStartingAccount(newAccount));
     }
 
     function getDefaultAccountName(){
@@ -53,7 +58,8 @@ const AddAccountForm = () => {
     }
 
     const run = () => {    
-        const history = runOptimiser(startingAccounts.accounts, addAccountForm.totalYears!, addAccountForm.availableFunds!);
+
+    const history = runOptimiser(startingAccounts.accounts, addAccountForm.totalYears!, addAccountForm.availableFunds!);
         dispatch(set(history));
     }
   
@@ -67,7 +73,7 @@ const AddAccountForm = () => {
                         value={addAccountForm.accountType} onChange={(e) => dispatch(setAccountType(parseInt(e.target.value)))}>
                         <option value={AccountType.Investment}>Investment</option>
                         <option value={AccountType.Loan}>Loan</option>
-                    </select>s
+                    </select>
                 </div>
                 <label>Balance</label>
                 <DollarInput onValidInput={(e) => dispatch(setBalance(e))} onInputError={() => dispatch(setBalance(undefined))}/>
