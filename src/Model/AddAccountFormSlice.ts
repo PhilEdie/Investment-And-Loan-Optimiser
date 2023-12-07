@@ -1,70 +1,25 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import type { RootState } from "./Store"
-import currency from "currency.js";
 import { AccountType } from "./AccountType";
 
 interface AddAccountFormState {
-    balance: {
-        value? : currency,
-        isValid: boolean   
-    },
-    interestRate : {
-        value? : number,
-        isValid : boolean
-    },
-    accountName : {
-        value? : string,
-        isValid : boolean
-    },
-
+    balance: string,
+    interestRate : string,
+    accountName : string,
     accountType : AccountType,
-
-    totalYears : {
-        value? : number,
-        isValid : boolean
-    },
-    availableFunds : {
-        value? : currency,
-        isValid : boolean
-    },
-    minimumAnnualPayment : {
-        value? : currency,
-        isValid: boolean
-    }
+    totalYears : string,
+    availableFunds : string,
+    minimumAnnualPayment : string
 }
 
 const initialState: AddAccountFormState = {
-    balance: {
-        value : currency(0),
-        isValid : true
-    },
-
-    interestRate: {
-        value : 0,
-        isValid : true
-    },
-
-    accountName: {
-        value : "Investment-1",
-        isValid : true
-    },
-
-    accountType: AccountType.Investment,
-
-    totalYears: {
-        value : 5,
-        isValid : true
-    },
-
-    availableFunds: {
-        value : currency(5000),
-        isValid : true
-    },
-
-    minimumAnnualPayment: {
-        value : currency(0),
-        isValid : true
-    }
+    balance: "0.00",
+    interestRate : "0.000",
+    accountName : "Investment Account",
+    accountType : AccountType.Investment,
+    totalYears : "5",
+    availableFunds  : "0.00",
+    minimumAnnualPayment : "0.00"
 }
 
 export const addAccountFormSlice = createSlice({
@@ -72,54 +27,28 @@ export const addAccountFormSlice = createSlice({
     initialState,
     reducers: {
         setBalance: (state, action: PayloadAction<string>) => {
-            
-            
-            state.balance.value = currency(action.payload);
-            
-            state.balance.value = action.payload;
+            state.balance = action.payload;
         },
-        setInterestRate: (state, action: PayloadAction<number>) => {
-            state.interestRate.value = action.payload;
+        setInterestRate: (state, action: PayloadAction<string>) => {
+            state.interestRate = action.payload;
         },
         setAccountName: (state, action: PayloadAction<string>) => {
-            state.accountName.value = action.payload;
+            state.accountName = action.payload;
         },
         setAccountType: (state, action: PayloadAction<AccountType>) => {
             state.accountType = action.payload;
         },
-        setTotalYears: (state, action: PayloadAction<number>) => {
-            state.totalYears.value = action.payload;
+        setTotalYears: (state, action: PayloadAction<string>) => {
+            state.totalYears = action.payload;
         },
-        setAvailableFunds: (state, action: PayloadAction<currency>) => {
-            state.availableFunds.value = action.payload;
+        setAvailableFunds: (state, action: PayloadAction<string>) => {
+            state.availableFunds = action.payload;
         },
-        setMinimumAnnualPayment: (state, action: PayloadAction<currency>) => {
-            state.minimumAnnualPayment.value = action.payload;
+        setMinimumAnnualPayment: (state, action: PayloadAction<string>) => {
+            state.minimumAnnualPayment = action.payload;
         }
     }
 });
-
-function isValidDollarAmount(value : string) : boolean {
-    const regex = /^\$?[0-9]+(\.[0-9][0-9])?$/;
-    return !regex.test(value);
-}
-
-function isValidAccountName(value : string) : boolean {
-    const regex = /^.{1,20}$/;
-    return regex.test(value);
-}
-
-function isValidTotalYears(value : string) : boolean {
-    const regex = /^(100|[1-9][0-9]?)$/;
-    return regex.test(value);
-}
-
-function isValidInterestRate(value : string) : boolean {
-    const regex = /^(100(\.0{1,3})?|([0-9]{1,2})(\.\d{1,3})?)$/;
-    return regex.test(value);
-}
-
-
 
 export const {setBalance, setInterestRate, setAccountName, setAccountType, setTotalYears, setAvailableFunds, setMinimumAnnualPayment } = addAccountFormSlice.actions;
 
