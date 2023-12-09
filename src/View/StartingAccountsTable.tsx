@@ -14,7 +14,7 @@ const StartingAccountsTable = () => {
 
     return (
         <div className="table-responsive">
-        <h3>Starting Accounts</h3>
+        <h3 className="text-center">Starting Accounts</h3>
         <table style={{width : "100%"}} className="table table-bordered">
             <thead>
                 <tr>
@@ -48,7 +48,7 @@ const StartingAccountsTable = () => {
                             account instanceof Loan ? (account as Loan).getMinimumPayment().toString() : "N/A"}
                         </td>
                         <td>
-                            <button className="btn btn-danger" type="button" onClick={() => dispatch(removeStartingAccount(account.getAccountName()))}>Remove</button>
+                            <button className="btn btn-outline-danger float-end" type="button" onClick={() => dispatch(removeStartingAccount(account.getAccountName()))}>Remove</button>
                         </td>
                     </tr>
                 ))}

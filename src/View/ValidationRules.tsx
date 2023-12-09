@@ -1,22 +1,22 @@
 export class ValidationRules {
-    public static isValidCurrency(input: string): boolean {
-        const regex = /^(?!0\.00)\d{1,8}(\.\d{1,2})?$/;
-        return regex.test(input);
+    
+    public static isValidDollarAmount(value : string) : boolean {
+        const regex = /^\$?[0-9]+(\.[0-9][0-9])?$/;
+        return regex.test(value) && Number(value) < 100000000;
     }
-
-    public static isValidName(input: string): boolean {
-        const regex = /^(?=.*[a-zA-Z0-9]).{1,24}$/;
-        return regex.test(input);
+    
+    public static isValidAccountName(value : string) : boolean {
+        const regex = /^.{1,20}$/;
+        return regex.test(value);
     }
-
-    public static isValidInterestRate(input: string): boolean {        
-        const regex = /^(100(\.0{1,3})?|([12]?[0-9]|0?[1-9])(\.\d{1,3})?|0\.\d{1,3})$/;
-        return regex.test(input);
+    
+    public static isValidTotalYears(value : string) : boolean {
+        const regex = /^(100|[1-9][0-9]?)$/;
+        return regex.test(value);
     }
-
-    public static isValidTotalIterations(input: string): boolean { 
-        // A number between 1 and 100. 
-        const regex = /^(100|[1-9][0-9]?|0?[1-9])$/;
-        return regex.test(input);
+    
+    public static isValidInterestRate(value : string) : boolean {
+        const regex = /^(100(\.0{1,3})?|([0-9]{1,2})(\.\d{1,3})?)$/;
+        return regex.test(value);
     }
 }

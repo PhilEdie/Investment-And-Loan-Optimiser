@@ -10,10 +10,6 @@ const ResultsTable = () => {
 
     return (
     <div>
-        {historyArray.length != 0 && 
-            <h2>Results</h2>
-        }
-        
         {historyArray.slice(1).map((paymentPeriod: Account[], index: number) => (
             <>
             <h3>Year {index + 1}</h3>

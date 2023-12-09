@@ -1,21 +1,16 @@
 import currency from "currency.js";
-import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AccountType } from "../Model/AccountType";
-import { Investment } from "../Model/Investment";
-import { Loan } from "../Model/Loan";
-import { FormFieldType } from "./FormFieldType";
-import useInput from "./useInput";
-
 import {addStartingAccount, clearStartingAccounts, selectStartingAccounts} from "../Model/StartingAccountsSlice";
 import { useSelector } from "react-redux";
-import TextInput from "./TextInput";
-import DollarInput from "./CurrencyInput";
-import PercentageInput from "./PercentageInput";
-import IntegerInput from "./IntegerInput";
 import { runOptimiser } from "../Controller/AccountsController";
-import { set } from "../Model/HistorySlice";
-import { selectAddAccountForm, setAccountName, setAccountType, setAvailableFunds, setBalance, setInterestRate, setMinimumAnnualPayment, setTotalYears } from "../Model/AddAccountFormSlice";
+import { clear, set } from "../Model/HistorySlice";
+import { INITIAL_ACCOUNT_FORM_STATE, selectAddAccountForm, setAccountName, setAccountType, setAvailableFunds, setBalance, setInterestRate, setMinimumAnnualPayment, setTotalYears } from "../Model/AddAccountFormSlice";
+import { Loan } from "../Model/Loan";
+import { Investment } from "../Model/Investment";
+import AddAccountFormInput from "./Inputs/AddAccountFormInput";
+import { ValidationRules } from "./ValidationRules";
+import { Account } from "../Model/Account";
 
 const AddAccountForm = () => {
 
@@ -23,85 +18,128 @@ const AddAccountForm = () => {
     const startingAccounts = useSelector(selectStartingAccounts);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(clearStartingAccounts());
-    }, []);
-
-
     function clearForm() {
-        dispatch(setBalance(currency(0)));
-        dispatch(setInterestRate(0));
-        dispatch(setAccountName(getDefaultAccountName()));
-        dispatch(setTotalYears(0));
-        dispatch(setAvailableFunds(currency(0)));
-        dispatch(setMinimumAnnualPayment(currency(0)));
+        dispatch(clearStartingAccounts());
+        dispatch(clear());
+        dispatch(setBalance(INITIAL_ACCOUNT_FORM_STATE.balance));
+        dispatch(setInterestRate(INITIAL_ACCOUNT_FORM_STATE.interestRate));
+        dispatch(setAccountName(INITIAL_ACCOUNT_FORM_STATE.accountName));
+        dispatch(setTotalYears(INITIAL_ACCOUNT_FORM_STATE.totalYears));
+        dispatch(setAvailableFunds(INITIAL_ACCOUNT_FORM_STATE.availableFunds));
+        dispatch(setMinimumAnnualPayment(INITIAL_ACCOUNT_FORM_STATE.minimumAnnualPayment));
     }
 
     function handleAddAccount() {
-        return;
+        
+        if (document.getElementsByClassName("is-invalid").length > 0){
+            alert("Please enter valid information.");
+            return;
+        }
+
+        if(startingAccounts.accounts.length  >= 10){
+            alert("A maximum of 10 Accounts already exist.");
+            return;
+        }
+
+        if(startingAccounts.accounts.filter((account) => account.getAccountName() === addAccountForm.accountName).length > 0){
+            alert("Please enter a unique account name.");
+            return;
+        }
+
+        var newAccount = createAccount();
+
+        dispatch(addStartingAccount(newAccount));
+        dispatch(setAccountType(INITIAL_ACCOUNT_FORM_STATE.accountType));
+
+        var defaultName = getDefaultAccountName(INITIAL_ACCOUNT_FORM_STATE.accountType, newAccount);
+        dispatch(setAccountName(defaultName));
+
+        dispatch(setInterestRate(INITIAL_ACCOUNT_FORM_STATE.interestRate));
+        dispatch(setBalance(INITIAL_ACCOUNT_FORM_STATE.balance));
     }
 
-    function getDefaultAccountName(){
-        const prefix = AccountType[addAccountForm.accountType!];
+    function createAccount() : Account {
+        if(addAccountForm.accountType == AccountType.Loan){
+            return new Loan(addAccountForm.accountName, 1 + (Number(addAccountForm.interestRate) / 100), currency(addAccountForm.balance).multiply(-1), currency(addAccountForm.minimumAnnualPayment));
+        } else {
+            return new Investment(addAccountForm.accountName, 1 + (Number(addAccountForm.interestRate) / 100), currency(addAccountForm.balance));
+        }
+    }
+
+    function onAccountTypeChange(value : string){
+        
+        var accountType = parseInt(value);
+        
+        dispatch(setAccountType(accountType));
+
+        var defaultName = getDefaultAccountName(accountType);
+        dispatch(setAccountName(defaultName));
+    }
+
+    function getDefaultAccountName(accountType : AccountType, createdAccount? : Account) : string {
+        const prefix = AccountType[accountType];
+        var existingAccounts = startingAccounts.accounts;
+        
+        if(createdAccount){
+            existingAccounts = existingAccounts.concat(createdAccount);
+        }       
+
         let index = 1;
 
-        while(startingAccounts.accounts.filter((account) => account.getAccountName() === (prefix +"-"+ index.toString()))
+        while(existingAccounts.filter((account) => account.getAccountName() === (prefix +" "+ index.toString()))
             .length > 0){
             index++;
         }
-        return prefix + "-" + index.toString();
+        return prefix + " " + index.toString();
     }
 
-    const run = () => {    
-        const history = runOptimiser(startingAccounts.accounts, addAccountForm.totalYears!, addAccountForm.availableFunds!);
+    const run = () => {   
+        if(startingAccounts.accounts.length === 0){
+            alert("Please add at least one Account.");
+            return;
+        }
+        
+        if (document.getElementsByClassName("is-invalid").length > 0){
+            alert("Please enter valid information.");
+            return;
+        }
+
+        const history = runOptimiser(startingAccounts.accounts, Number(addAccountForm.totalYears), currency(addAccountForm.availableFunds));
         dispatch(set(history));
     }
-  
+
     return (
         <div className="container">
-                <label>Account Name</label>
-                <TextInput onValidInput={(e) => dispatch(setAccountName(e))} onInputError={() => dispatch(setAccountName(undefined))}/>
-                <div className="row mb-3">
-                    <label className="form-label">Account Type</label>
-                    <select className="form-select"
-                        value={addAccountForm.accountType} onChange={(e) => dispatch(setAccountType(parseInt(e.target.value)))}>
-                        <option value={AccountType.Investment}>Investment</option>
-                        <option value={AccountType.Loan}>Loan</option>
-                    </select>s
-                </div>
-                <label>Balance</label>
-                <DollarInput onValidInput={(e) => dispatch(setBalance(e))} onInputError={() => dispatch(setBalance(undefined))}/>
-                
-                <label>Interest Rate</label>
-                <PercentageInput onValidInput={(e) => dispatch(setInterestRate(e))} onInputError={() => dispatch(setInterestRate(undefined))}/>
-                <div className="row mb-3">
-                    <div className="col-mb-6"> 
-                        <button className="btn btn-primary" onClick={(e) => handleAddAccount()}>Add Account</button>
-                    </div>
-                </div>
+            <AddAccountFormInput storeKey="accountName" label="Account Name" validate={ValidationRules.isValidAccountName} onChange={setAccountName}/>
+           
+            <div className="form-floating mb-3">
+                <select className="form-select" id="accountTypeSelect"
+                    value={addAccountForm.accountType} onChange={(e) => onAccountTypeChange(e.target.value)}>
+                    <option value={AccountType.Investment}>Investment</option>
+                    <option value={AccountType.Loan}>Loan</option>
+                </select>
+                <label>Account Type</label>
+            </div>
 
-                <div className="row mb-3">
-                    <div className="col-mb-6"> 
-                        <button className="btn btn-primary" type="button" onClick={(e) => clearForm()}>Clear</button>
-                    </div>
+            <AddAccountFormInput storeKey="balance" label="Balance" validate={ValidationRules.isValidDollarAmount} onChange={setBalance}/>
+            <AddAccountFormInput storeKey="interestRate" label="Interest Rate" validate={ValidationRules.isValidInterestRate} onChange={setInterestRate}/>
+
+            {addAccountForm.accountType == AccountType.Loan &&
+                <AddAccountFormInput storeKey="minimumAnnualPayment" label="Minimum Annual Payment" validate={ValidationRules.isValidDollarAmount} onChange={setMinimumAnnualPayment}/>
+            } 
+            <div className="row mb-3">
+                <div className="col-mb-3"> 
+                    <button className="btn btn-outline-primary" onClick={(e) => handleAddAccount()}>Add Account</button>
                 </div>
-                
-                
-                <label>Total Years</label>
-                <IntegerInput onValidInput={(e) => dispatch(setTotalYears(e))} onInputError={() => dispatch(setTotalYears(undefined))}/>
-
-                <label>Available Funds</label>
-                <DollarInput onValidInput={(e) => dispatch(setAvailableFunds(e))} onInputError={() => dispatch(setAvailableFunds(undefined))}/>
-                
-                {addAccountForm.accountType == AccountType.Loan &&
-                    <>
-                        <label>Minimum Payment</label>
-                        <DollarInput onValidInput={(e) => dispatch(setMinimumAnnualPayment(e))} onInputError={() => dispatch(setMinimumAnnualPayment(undefined))}/>
-                
-                    </>
-                }
-
-                <button className="btn btn-primary" type="button" onClick={(e) => run()}>Run</button>
+            </div> 
+                         
+            <AddAccountFormInput storeKey="totalYears" label="Total Years" validate={ValidationRules.isValidTotalYears} onChange={setTotalYears}/>
+            <AddAccountFormInput storeKey="availableFunds" label="Available Funds" validate={ValidationRules.isValidDollarAmount} onChange={setAvailableFunds}/>          
+                    
+            <div className="d-grid gap-2 d-md-block"> 
+                <button className="btn btn-outline-primary" type="button" onClick={(e) => run()}>Run</button>
+                <button className="btn btn-outline-danger" type="button" onClick={(e) => clearForm()}>Reset</button>
+            </div>
         </div>
     );
 }

@@ -1,51 +1,50 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import type { RootState } from "./Store"
-import currency from "currency.js";
 import { AccountType } from "./AccountType";
 
-interface AddAccountFormState {
-    balance?: currency,
-    interestRate?: number,
-    accountName?: string,
-    accountType: AccountType,
-    totalYears?: number,
-    availableFunds? : currency,
-    minimumAnnualPayment? : currency
+export interface AddAccountFormState {
+    balance: string,
+    interestRate : string,
+    accountName : string,
+    accountType : AccountType,
+    totalYears : string,
+    availableFunds : string,
+    minimumAnnualPayment : string
 }
 
-const initialState: AddAccountFormState = {
-    balance: currency(0),
-    interestRate: 0,
-    accountName: "Investment-1",
-    accountType: AccountType.Investment,
-    totalYears: 5,
-    availableFunds: currency(5000),
-    minimumAnnualPayment: currency(0)
+export const INITIAL_ACCOUNT_FORM_STATE: AddAccountFormState = {
+    balance: "0.00",
+    interestRate : "0.000",
+    accountName : "Investment 1",
+    accountType : AccountType.Investment,
+    totalYears : "5",
+    availableFunds  : "1000.00",
+    minimumAnnualPayment : "0.00"
 }
 
 export const addAccountFormSlice = createSlice({
     name: "addAccountForm",
-    initialState,
+    initialState: INITIAL_ACCOUNT_FORM_STATE,
     reducers: {
-        setBalance: (state, action: PayloadAction<currency|undefined>) => {
+        setBalance: (state, action: PayloadAction<string>) => {
             state.balance = action.payload;
         },
-        setInterestRate: (state, action: PayloadAction<number|undefined>) => {
+        setInterestRate: (state, action: PayloadAction<string>) => {
             state.interestRate = action.payload;
         },
-        setAccountName: (state, action: PayloadAction<string|undefined>) => {
+        setAccountName: (state, action: PayloadAction<string>) => {
             state.accountName = action.payload;
         },
         setAccountType: (state, action: PayloadAction<AccountType>) => {
             state.accountType = action.payload;
         },
-        setTotalYears: (state, action: PayloadAction<number|undefined>) => {
+        setTotalYears: (state, action: PayloadAction<string>) => {
             state.totalYears = action.payload;
         },
-        setAvailableFunds: (state, action: PayloadAction<currency|undefined>) => {
+        setAvailableFunds: (state, action: PayloadAction<string>) => {
             state.availableFunds = action.payload;
         },
-        setMinimumAnnualPayment: (state, action: PayloadAction<currency|undefined>) => {
+        setMinimumAnnualPayment: (state, action: PayloadAction<string>) => {
             state.minimumAnnualPayment = action.payload;
         }
     }
