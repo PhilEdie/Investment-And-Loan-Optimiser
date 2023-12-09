@@ -80,7 +80,7 @@ const LineChart = () => {
       .attr("viewBox", [0, 0, width, height])
       .attr(
         "style",
-        "max-width: 100%; height: auto; height: intrinsic; margin-top: 3em;"
+        "max-width: 100%; height: auto; height: intrinsic;"
       );
 
     // Add the x-axis.
@@ -140,6 +140,9 @@ const LineChart = () => {
 
   return (
     <div>
+      {history.history.toArray().length >  0 && 
+            <h2 className="text-center">Results</h2>
+        }
       <svg ref={svgRef} />
     </div>
   );

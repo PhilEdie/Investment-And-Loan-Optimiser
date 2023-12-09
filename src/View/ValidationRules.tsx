@@ -2,7 +2,7 @@ export class ValidationRules {
     
     public static isValidDollarAmount(value : string) : boolean {
         const regex = /^\$?[0-9]+(\.[0-9][0-9])?$/;
-        return regex.test(value);
+        return regex.test(value) && Number(value) < 100000000;
     }
     
     public static isValidAccountName(value : string) : boolean {

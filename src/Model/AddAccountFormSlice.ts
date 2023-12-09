@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import type { RootState } from "./Store"
 import { AccountType } from "./AccountType";
 
-interface AddAccountFormState {
+export interface AddAccountFormState {
     balance: string,
     interestRate : string,
     accountName : string,
@@ -12,19 +12,19 @@ interface AddAccountFormState {
     minimumAnnualPayment : string
 }
 
-const initialState: AddAccountFormState = {
+export const INITIAL_ACCOUNT_FORM_STATE: AddAccountFormState = {
     balance: "0.00",
     interestRate : "0.000",
-    accountName : "Investment Account",
+    accountName : "Investment 1",
     accountType : AccountType.Investment,
     totalYears : "5",
-    availableFunds  : "0.00",
+    availableFunds  : "1000.00",
     minimumAnnualPayment : "0.00"
 }
 
 export const addAccountFormSlice = createSlice({
     name: "addAccountForm",
-    initialState,
+    initialState: INITIAL_ACCOUNT_FORM_STATE,
     reducers: {
         setBalance: (state, action: PayloadAction<string>) => {
             state.balance = action.payload;

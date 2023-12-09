@@ -11,6 +11,7 @@ export class Loan extends Account {
             throw new Error("Error, a balance on a Model.Loan object should be negative.");
         }
         this._minimumPayment = minimumPayment;
+        
         if (paidOff !== undefined) {
             this._paidOff = paidOff;
         }
