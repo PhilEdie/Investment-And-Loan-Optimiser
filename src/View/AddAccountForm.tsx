@@ -11,6 +11,7 @@ import { Investment } from "../Model/Investment";
 import AddAccountFormInput from "./Inputs/AddAccountFormInput";
 import { ValidationRules } from "./ValidationRules";
 import { Account } from "../Model/Account";
+import { Utilities } from "../Utilities";
 
 const AddAccountForm = () => {
 
@@ -93,14 +94,20 @@ const AddAccountForm = () => {
         return prefix + " " + index.toString();
     }
 
-    const run = () => {   
-        if(startingAccounts.accounts.length === 0){
+    const run = () => {  
+        
+        if(startingAccounts.accounts.length === 0) {
             alert("Please add at least one Account.");
             return;
         }
-        
-        if (document.getElementsByClassName("is-invalid").length > 0){
-            alert("Please enter valid information.");
+
+        if(currency(addAccountForm.availableFunds).value < 0) {
+            alert("Available funds should be greater or equal to zero.");
+            return;
+        }
+
+        if(Utilities.getTotalMinimumPayments(startingAccounts.accounts).value > currency(addAccountForm.availableFunds).value){
+            alert("Total minimum payments is greater than the available funds.");
             return;
         }
 
